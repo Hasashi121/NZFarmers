@@ -47,10 +47,11 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
 
 
         builder.Entity<Rating>()
-        .HasOne(r => r.User)
-        .WithMany(u => u.Rating)
-        .HasForeignKey(r => r.UserID)
-        .OnDelete(DeleteBehavior.Restrict);
+    .HasOne(r => r.User)
+    .WithMany(u => u.Ratings)  
+    .HasForeignKey(r => r.UserID)
+    .OnDelete(DeleteBehavior.Restrict);
+
 
         builder.Entity<Farmers>()
             .HasMany(f => f.FarmerProducts)

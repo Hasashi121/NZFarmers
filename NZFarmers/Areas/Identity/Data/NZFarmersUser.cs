@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using NZFarmers.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace NZFarmers.Areas.Identity.Data
@@ -31,7 +32,6 @@ namespace NZFarmers.Areas.Identity.Data
         public string ContactNumber { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public object Ratings { get; internal set; }
-        public object Rating { get; internal set; }
+
     }
 }

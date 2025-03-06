@@ -46,8 +46,10 @@ namespace NZFarmers.Models
         // Navigation properties
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<PaymentDetail> PaymentDetails { get; set; }
-        public virtual ICollection<Rating> Ratings { get; set; }
+        public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
         public virtual Farmers?  Farmer { get; set; }
+
+
     }
 
     /// <summary>

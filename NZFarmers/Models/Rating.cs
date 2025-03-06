@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using NZFarmers.Areas.Identity.Data;
 
 namespace NZFarmers.Models
 {
@@ -10,9 +9,9 @@ namespace NZFarmers.Models
         public int RatingID { get; set; }
 
         [Required(ErrorMessage = "User is required.")]
-        public string UserID { get; set; }
+        public int UserID { get; set; }
         [ForeignKey(nameof(UserID))]
-        public virtual NZFarmersUser User { get; set; } = default!;
+        public virtual User User { get; set; } = default!;  
 
         [Required(ErrorMessage = "Farmer is required.")]
         public int FarmerID { get; set; }
