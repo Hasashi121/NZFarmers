@@ -12,8 +12,8 @@ using NZFarmers.Data;
 namespace NZFarmers.Migrations
 {
     [DbContext(typeof(NZFarmersContext))]
-    [Migration("20250228011146_base")]
-    partial class @base
+    [Migration("20250302223928_Basemodels")]
+    partial class Basemodels
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

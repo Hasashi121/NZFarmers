@@ -1,18 +1,34 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using NZFarmers.Areas.Identity.Data;
 
 namespace NZFarmers.Models
 {
+    public enum PaymentStatus
+    {
+        Pending,
+        Completed,
+        Failed,
+        Refunded
+    }
+
+    public enum PaymentMethod
+    {
+        CreditCard,
+        DebitCard,
+        PayPal,
+        BankTransfer
+    }
+
     public class PaymentDetail
     {
         [Key]
-        public int PaymentID { get; set; }  // Unique identifier
+        public int PaymentID { get; set; }
 
-        [Required(ErrorMessage = "User association is mandatory.")]
-        public int UserID { get; set; }  // Foreign key property
-
-        [ForeignKey(nameof(UserID))]  // Correctly references the foreign key property
-        public virtual User User { get; set; }  // Navigation property linking to User
+        [Required(ErrorMessage = "User association is required.")]
+        public string UserID { get; set; }
+        [ForeignKey(nameof(UserID))]
+        public virtual NZFarmersUser User { get; set; } = default!;
 
         [Required(ErrorMessage = "Amount is required.")]
         [DataType(DataType.Currency)]
@@ -20,17 +36,14 @@ namespace NZFarmers.Models
         public decimal Amount { get; set; }
 
         [Required(ErrorMessage = "Payment status is required.")]
-        [StringLength(50, ErrorMessage = "Payment status cannot exceed 50 characters.")]
-        public string Status { get; set; }  // e.g., Pending, Completed, Failed
+        public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
 
         [Required(ErrorMessage = "Payment method is required.")]
-        [StringLength(50, ErrorMessage = "Payment method description cannot exceed 50 characters.")]
-        public string PaymentMethod { get; set; }  // e.g., Card, Bank Transfer
+        public PaymentMethod Method { get; set; } = PaymentMethod.CreditCard;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // Navigation property for linking payments with orders
-        public virtual ICollection<OrderPayment> OrderPayments { get; set; }
-
+        // Navigation: Payment can be linked to orders
+        public virtual ICollection<Order>? Orders { get; set; } = new List<Order>();
     }
 }

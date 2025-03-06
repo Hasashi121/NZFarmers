@@ -17,13 +17,11 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
 
     public DbSet<User> Users { get; set; }
     public DbSet<Farmers> Farmers { get; set; }
-    public DbSet<FarmersLocation> FarmerLocations { get; set; }
     public DbSet<Products> Products { get; set; }
     public DbSet<FarmerProduct> FarmerProducts { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderDetail> OrderDetails { get; set; }
     public DbSet<PaymentDetail> PaymentDetails { get; set; }
-    public DbSet<OrderPayment> OrderPayments { get; set; }
     public DbSet<Rating> Ratings { get; set; }
     public DbSet<DeliveryTracking> DeliveryTrackings { get; set; }
     public DbSet<EducationalContent> EducationalContents { get; set; }
@@ -37,36 +35,22 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
         // Customize the ASP.NET Identity model and override the defaults if needed.
         // For example, you can rename the ASP.NET Identity table names and more.
         // Add your customizations after calling base.OnModelCreating(builder);
+
+        
+
+
         builder.Entity<OrderDetail>()
         .HasOne(od => od.Order)
         .WithMany(o => o.OrderDetails)
         .HasForeignKey(od => od.OrderID)
         .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Entity<OrderPayment>()
-        .HasOne(op => op.PaymentDetail)
-        .WithMany(pd => pd.OrderPayments)
-        .HasForeignKey(op => op.PaymentID)
-        .OnDelete(DeleteBehavior.Restrict);
-
-        // You may also need to configure other relationships that might cause multiple cascade paths
-        // For example, if OrderPayments also relates to Orders:
-        builder.Entity<OrderPayment>()
-            .HasOne(op => op.Order)
-            .WithMany(o => o.OrderPayments)
-            .HasForeignKey(op => op.OrderID)
-            .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<Rating>()
         .HasOne(r => r.User)
-        .WithMany(u => u.Ratings)
+        .WithMany(u => u.Rating)
         .HasForeignKey(r => r.UserID)
         .OnDelete(DeleteBehavior.Restrict);
-
-        builder.Entity<Farmers>()
-           .HasMany(f => f.FarmerLocations)
-           .WithOne(l => l.Farmer)
-           .HasForeignKey(l => l.FarmerID);
 
         builder.Entity<Farmers>()
             .HasMany(f => f.FarmerProducts)
@@ -87,4 +71,6 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
             .WithMany(e => e.FarmerMarketParticipations)
             .HasForeignKey(fmp => fmp.EventID);
     }
+
+public DbSet<NZFarmers.Models.FarmerMarkets> FarmerMarkets { get; set; } = default!;
 }

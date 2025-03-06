@@ -1,31 +1,31 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using NZFarmers.Areas.Identity.Data;
 
 namespace NZFarmers.Models
 {
     public class Rating
     {
         [Key]
-        public int RatingID { get; set; }  // Unique identifier
+        public int RatingID { get; set; }
 
         [Required(ErrorMessage = "User is required.")]
-        public int UserID { get; set; }
-        [ForeignKey("UserID")]
-        public virtual User User { get; set; } = default!;
+        public string UserID { get; set; }
+        [ForeignKey(nameof(UserID))]
+        public virtual NZFarmersUser User { get; set; } = default!;
 
         [Required(ErrorMessage = "Farmer is required.")]
         public int FarmerID { get; set; }
-        [ForeignKey("FarmerID")]
+        [ForeignKey(nameof(FarmerID))]
         public virtual Farmers Farmer { get; set; } = default!;
 
         [Required(ErrorMessage = "Rating is required.")]
         [Range(1, 5, ErrorMessage = "Rating must be between 1 and 5.")]
         public int RatingValue { get; set; }
 
-        [StringLength(2000, ErrorMessage = "Comment is too long.")]
+        [StringLength(500, ErrorMessage = "Comment cannot exceed 500 characters.")]
         public string? Comment { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace NZFarmers.Migrations
 {
     /// <inheritdoc />
-    public partial class @base : Migration
+    public partial class Basemodels : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

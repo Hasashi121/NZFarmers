@@ -1,33 +1,79 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NZFarmers.Areas.Identity.Data;
 using NZFarmers.Data;
+
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("NZFarmersContextConnection") ?? throw new InvalidOperationException("Connection string 'NZFarmersContextConnection' not found.");
 
-builder.Services.AddDbContext<NZFarmersContext>(options => options.UseSqlServer(connectionString));
+// Get the connection string
+var connectionString = builder.Configuration.GetConnectionString("NZFarmersContextConnection")
+    ?? throw new InvalidOperationException("Connection string 'NZFarmersContextConnection' not found.");
 
-builder.Services.AddDefaultIdentity<NZFarmersUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<NZFarmersContext>();
+// Configure database
+builder.Services.AddDbContext<NZFarmersContext>(options =>
+    options.UseSqlServer(connectionString));
 
-// Add services to the container.
+// Add Identity
+builder.Services.AddDefaultIdentity<NZFarmersUser>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = false;
+})
+.AddRoles<IdentityRole>() // Enable roles
+.AddEntityFrameworkStores<NZFarmersContext>();
+
+// Add services
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+// Seed roles
+using (var scope = app.Services.CreateScope())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    var services = scope.ServiceProvider;
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = services.GetRequiredService<UserManager<NZFarmersUser>>();
+
+    string[] roleNames = { "Admin", "Farmer", "Consumer" };
+    foreach (var roleName in roleNames)
+    {
+        if (!await roleManager.RoleExistsAsync(roleName))  // ? Check if role exists before adding
+        {
+            await roleManager.CreateAsync(new IdentityRole(roleName));
+        }
+    }
+
+
+    // Seed an Admin user if none exists
+    if (await userManager.FindByEmailAsync("admin@nzfarmers.com") == null)
+    {
+        var adminUser = new NZFarmersUser
+        {
+            UserName = "admin@nzfarmers.com",
+            Email = "admin@nzfarmers.com",
+            FirstName = "Admin",
+            LastName = "User",
+            ContactNumber = "+1234567890",  // ✅ Added ContactNumber (Fix)
+            Role = RoleType.Admin,
+            EmailConfirmed = true
+        };
+
+        string adminPassword = "Admin@123"; // Change in production
+        var result = await userManager.CreateAsync(adminUser, adminPassword);
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+    }
+
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapRazorPages();
 
 app.MapControllerRoute(
     name: "default",

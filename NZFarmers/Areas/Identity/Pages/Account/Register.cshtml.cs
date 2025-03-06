@@ -75,10 +75,25 @@ namespace NZFarmers.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+
+
+            [Required]
+            [StringLength(100, ErrorMessage = "First name cannot exceed 100 characters.")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [StringLength(100, ErrorMessage = "Last name cannot exceed 100 characters.")]
+            public string LastName { get; set; }
+
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
+
+            [Required(ErrorMessage = "Contact number is required.")]
+            [Phone(ErrorMessage = "Invalid phone number format.")]
+            [RegularExpression(@"^\+?\d{10,15}$", ErrorMessage = "Phone number must be between 10 and 15 digits.")]
+            public string ContactNumber { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -98,6 +113,9 @@ namespace NZFarmers.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required(ErrorMessage = "Please select a role.")]
+            public RoleType Role { get; internal set; }
         }
 
 
@@ -111,17 +129,27 @@ namespace NZFarmers.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                // 🛠️ Store additional fields
+                user.FirstName = Input.FirstName;
+                user.LastName = Input.LastName;
+                user.ContactNumber = Input.ContactNumber;
+                user.Role = Input.Role;
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    await _userManager.AddToRoleAsync(user, Input.Role.ToString());
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -145,15 +173,17 @@ namespace NZFarmers.Areas.Identity.Pages.Account
                         return LocalRedirect(returnUrl);
                     }
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
+
+
 
         private NZFarmersUser CreateUser()
         {
