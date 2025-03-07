@@ -14,7 +14,6 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
     {
 
     }
-
     public DbSet<User> Users { get; set; }
     public DbSet<Farmers> Farmers { get; set; }
     public DbSet<Products> Products { get; set; }
@@ -47,10 +46,10 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
 
 
         builder.Entity<Rating>()
-    .HasOne(r => r.User)
-    .WithMany(u => u.Ratings)  
-    .HasForeignKey(r => r.UserID)
-    .OnDelete(DeleteBehavior.Restrict);
+        .HasOne(r => r.User)
+        .WithMany(u => u.Ratings)  
+        .HasForeignKey(r => r.UserID)
+        .OnDelete(DeleteBehavior.Restrict);
 
 
         builder.Entity<Farmers>()

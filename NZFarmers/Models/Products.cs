@@ -8,13 +8,12 @@ namespace NZFarmers.Models
         public int ProductID { get; set; }
 
         [Required(ErrorMessage = "Product name is required.")]
-        [StringLength(255, ErrorMessage = "Product name cannot exceed 255 characters.")]
+        [StringLength(200, ErrorMessage = "Product name cannot exceed 200 characters.")]
         public string ProductName { get; set; } = string.Empty;
 
-        [StringLength(2000, ErrorMessage = "Product description is too long.")]
+        [StringLength(1000, ErrorMessage = "Product description is too long.")]
         public string? Description { get; set; }
 
-        // Navigation: Many farmers can list this product
         public virtual ICollection<FarmerProduct> FarmerProducts { get; set; } = new List<FarmerProduct>();
     }
 }

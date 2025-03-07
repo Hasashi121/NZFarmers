@@ -19,11 +19,10 @@ namespace NZFarmers.Models
         public virtual FarmerProduct FarmerProduct { get; set; } = default!;
 
         [Required(ErrorMessage = "Quantity is required.")]
-        [Range(1, 1000, ErrorMessage = "Quantity must be between 1 and 1000.")]
+        [Range(1, 500, ErrorMessage = "Quantity must be between 1 and 500.")]
         public int Quantity { get; set; }
 
         [Required(ErrorMessage = "Subtotal is required.")]
-        [DataType(DataType.Currency)]
         [Range(0.01, 1000000.00, ErrorMessage = "Subtotal must be between $0.01 and $1,000,000.")]
         public decimal Subtotal { get; set; }
     }

@@ -3,6 +3,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NZFarmers.Models
 {
+    public enum ProductCategory
+    {
+        Vegetables,
+        Fruits,
+        Seeds,
+        Dairy,
+        Meat,
+        Grains,
+        Other
+    }
+
     public class FarmerProduct
     {
         [Key]
@@ -17,6 +28,9 @@ namespace NZFarmers.Models
         public int ProductID { get; set; }
         [ForeignKey(nameof(ProductID))]
         public virtual Products Product { get; set; } = default!;
+
+        [Required(ErrorMessage = "Category is required.")]
+        public ProductCategory Category { get; set; } = ProductCategory.Other;
 
         [Required(ErrorMessage = "Price is required.")]
         [Range(0.01, 10000.00, ErrorMessage = "Price must be between $0.01 and $10,000.")]

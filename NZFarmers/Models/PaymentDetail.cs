@@ -31,8 +31,8 @@ namespace NZFarmers.Models
         public virtual NZFarmersUser User { get; set; } = default!;
 
         [Required(ErrorMessage = "Amount is required.")]
-        [DataType(DataType.Currency)]
         [Range(0.01, 1000000.00, ErrorMessage = "Amount must be between $0.01 and $1,000,000.")]
+        [DataType(DataType.Currency)]
         public decimal Amount { get; set; }
 
         [Required(ErrorMessage = "Payment status is required.")]
@@ -43,7 +43,6 @@ namespace NZFarmers.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // Navigation: Payment can be linked to orders
         public virtual ICollection<Order>? Orders { get; set; } = new List<Order>();
     }
 }

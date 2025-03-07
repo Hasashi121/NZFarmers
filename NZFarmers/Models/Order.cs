@@ -32,12 +32,6 @@ namespace NZFarmers.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // Direct link to PaymentDetail (nullable if not yet paid)
-        public int? PaymentID { get; set; }
-        [ForeignKey(nameof(PaymentID))]
-        public virtual PaymentDetail? PaymentDetail { get; set; }
-
-        // Navigation properties
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
         public virtual DeliveryTracking? DeliveryTracking { get; set; }
     }

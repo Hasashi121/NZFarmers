@@ -10,7 +10,7 @@ namespace NZFarmers.Models
         public int FarmerID { get; set; }
 
         [Required(ErrorMessage = "User association is required.")]
-        public string UserID { get; set; }  // Identity keys are typically strings
+        public string UserID { get; set; }
         [ForeignKey(nameof(UserID))]
         public virtual NZFarmersUser User { get; set; } = default!;
 
@@ -18,34 +18,34 @@ namespace NZFarmers.Models
         [StringLength(255, ErrorMessage = "Farm name cannot exceed 255 characters.")]
         public string FarmName { get; set; } = string.Empty;
 
-        [StringLength(2000, ErrorMessage = "Description is too long.")]
+        [StringLength(1000, ErrorMessage = "Description is too long.")]
         public string? Description { get; set; }
 
-        // Renamed to PhoneNumber for clarity.
         [Required(ErrorMessage = "Phone number is required.")]
-        [RegularExpression(@"^\+?\d{10,15}$", ErrorMessage = "Phone number must be between 10 and 15 digits.")]
+        [RegularExpression(@"^(\+64|0)[2-9]\d{7,9}$", ErrorMessage = "Must be a valid New Zealand phone number.")]
         public string PhoneNumber { get; set; } = string.Empty;
 
         [Url(ErrorMessage = "Invalid URL for profile image.")]
         public string? ProfileImage { get; set; }
 
-        // Address information merged into this table
+        // Address fields merged from FarmersLocation
         [Required(ErrorMessage = "Address is required.")]
         [StringLength(255, ErrorMessage = "Address cannot exceed 255 characters.")]
         public string Address { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "City is required.")]
         [StringLength(100, ErrorMessage = "City cannot exceed 100 characters.")]
+        [RegularExpression(@"^[A-Za-z\s'-]+$", ErrorMessage = "City must contain only letters, spaces, apostrophes, or hyphens.")]
         public string City { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Region is required.")]
         [StringLength(100, ErrorMessage = "Region cannot exceed 100 characters.")]
+        [RegularExpression(@"^[A-Za-z\s'-]+$", ErrorMessage = "Region must contain only letters, spaces, apostrophes, or hyphens.")]
         public string Region { get; set; } = string.Empty;
 
-        [StringLength(20, ErrorMessage = "Zip code cannot exceed 20 characters.")]
+        [StringLength(10, ErrorMessage = "Zip code cannot exceed 10 characters.")]
         public string? ZipCode { get; set; }
 
-        // Navigation properties
         public virtual ICollection<FarmerProduct> FarmerProducts { get; set; } = new List<FarmerProduct>();
         public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
         public virtual ICollection<FarmerMarketParticipation> FarmerMarketParticipations { get; set; } = new List<FarmerMarketParticipation>();

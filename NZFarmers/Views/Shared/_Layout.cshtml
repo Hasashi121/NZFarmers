@@ -19,12 +19,51 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="DeliveryTrackings" asp-action="Index">DeliveryTracking</a>
+
+                        <!-- Users & Farmers Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="usersFarmersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Users & Farmers
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="usersFarmersDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Users" asp-action="Index">Users</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Farmers" asp-action="Index">Farmers</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Ratings" asp-action="Index">Ratings</a></li>
+                            </ul>
                         </li>
+
+                        <!-- Orders & Products Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="ordersProductsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Orders & Products
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="ordersProductsDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Orders" asp-action="Index">Orders</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="OrderDetails" asp-action="Index">Order Details</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Products" asp-action="Index">Products</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="FarmerProducts" asp-action="Index">Farmer Products</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="PaymentDetails" asp-action="Index">Payments</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="DeliveryTrackings" asp-action="Index">Delivery Tracking</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Events & Educational Content Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="eventsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Events & Education
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="eventsDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="FarmerMarkets" asp-action="Index">Farmer Markets</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="FarmerMarketEvents" asp-action="Index">Market Events</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="FarmerMarketParticipations" asp-action="Index">Market Participation</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="EducationalContents" asp-action="Index">Educational Content</a></li>
+                            </ul>
+                        </li>
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
@@ -34,6 +73,7 @@
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -45,6 +85,7 @@
             &copy; 2025 - NZFarmers - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

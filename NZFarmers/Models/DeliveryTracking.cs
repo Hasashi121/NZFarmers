@@ -5,8 +5,8 @@ namespace NZFarmers.Models
 {
     public enum DeliveryStatus
     {
-        Dispatched,
-        InTransit,
+        Preparing,
+        Shipped,
         Delivered,
         Cancelled
     }
@@ -22,8 +22,8 @@ namespace NZFarmers.Models
         public virtual Order Order { get; set; } = default!;
 
         [Required(ErrorMessage = "Delivery status is required.")]
-        public DeliveryStatus Status { get; set; } = DeliveryStatus.Dispatched;
+        public DeliveryStatus Status { get; set; } = DeliveryStatus.Preparing;
 
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
     }
 }

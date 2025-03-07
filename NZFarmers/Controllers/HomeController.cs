@@ -1,32 +1,37 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NZFarmers.Data;
 using NZFarmers.Models;
 
-namespace NZFarmers.Controllers
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly NZFarmersContext _context;
+
+    public HomeController(NZFarmersContext context)
     {
-        private readonly ILogger<HomeController> _logger;
+        _context = context;
+    }
 
-        public HomeController(ILogger<HomeController> logger)
+    public async Task<IActionResult> Index(string category, string search)
+    {
+        var products = _context.FarmerProducts
+            .Include(p => p.Product)
+            .Include(p => p.Farmer)
+            .AsQueryable();
+
+        if (!string.IsNullOrEmpty(category))
         {
-            _logger = logger;
+            if (Enum.TryParse(category, out ProductCategory selectedCategory))
+            {
+                products = products.Where(p => p.Category == selectedCategory);
+            }
         }
 
-        public IActionResult Index()
+        if (!string.IsNullOrEmpty(search))
         {
-            return View();
+            products = products.Where(p => p.Product.ProductName.Contains(search) || p.Farmer.FarmName.Contains(search));
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        return View(await products.ToListAsync());
     }
 }
