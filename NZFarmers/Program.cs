@@ -29,42 +29,17 @@ var app = builder.Build();
 // Seed roles
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = services.GetRequiredService<UserManager<NZFarmersUser>>();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
     string[] roleNames = { "Admin", "Farmer", "Consumer" };
+
     foreach (var roleName in roleNames)
     {
-        if (!await roleManager.RoleExistsAsync(roleName))  // ? Check if role exists before adding
+        if (!await roleManager.RoleExistsAsync(roleName))
         {
             await roleManager.CreateAsync(new IdentityRole(roleName));
         }
     }
-
-
-    // Seed an Admin user if none exists
-    if (await userManager.FindByEmailAsync("admin@nzfarmers.com") == null)
-    {
-        var adminUser = new NZFarmersUser
-        {
-            UserName = "admin@nzfarmers.com",
-            Email = "admin@nzfarmers.com",
-            FirstName = "Admin",
-            LastName = "User",
-            ContactNumber = "+1234567890",  // ✅ Added ContactNumber (Fix)
-            Role = RoleType.Admin,
-            EmailConfirmed = true
-        };
-
-        string adminPassword = "Admin@123"; // Change in production
-        var result = await userManager.CreateAsync(adminUser, adminPassword);
-        if (result.Succeeded)
-        {
-            await userManager.AddToRoleAsync(adminUser, "Admin");
-        }
-    }
-
 }
 
 app.UseHttpsRedirection();
