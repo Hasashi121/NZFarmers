@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using NZFarmers.Models;
 
 namespace NZFarmers.Controllers
 {
+    [Authorize] // Ensure only logged-in users can access
     public class FarmerMarketEventsController : Controller
     {
         private readonly NZFarmersContext _context;
@@ -56,7 +58,7 @@ namespace NZFarmers.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("EventID,Title,Location,Date,Description,CreatedAt")] FarmerMarketEvent farmerMarketEvent)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _context.Add(farmerMarketEvent);
                 await _context.SaveChangesAsync();
@@ -93,7 +95,7 @@ namespace NZFarmers.Controllers
                 return NotFound();
             }
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 try
                 {

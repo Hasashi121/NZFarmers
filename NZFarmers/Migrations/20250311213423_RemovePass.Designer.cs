@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NZFarmers.Data;
 
@@ -11,9 +12,11 @@ using NZFarmers.Data;
 namespace NZFarmers.Migrations
 {
     [DbContext(typeof(NZFarmersContext))]
-    partial class NZFarmersContextModelSnapshot : ModelSnapshot
+    [Migration("20250311213423_RemovePass")]
+    partial class RemovePass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -476,6 +479,44 @@ namespace NZFarmers.Migrations
                     b.ToTable("Farmers");
                 });
 
+            modelBuilder.Entity("NZFarmers.Models.Order", b =>
+                {
+                    b.Property<int>("OrderID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderID"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("PaymentDetailPaymentID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("UserID1")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderID");
+
+                    b.HasIndex("PaymentDetailPaymentID");
+
+                    b.HasIndex("UserID");
+
+                    b.HasIndex("UserID1");
+
+                    b.ToTable("Orders");
+                });
+
             modelBuilder.Entity("NZFarmers.Models.OrderDetail", b =>
                 {
                     b.Property<int>("OrderDetailID")
@@ -522,9 +563,6 @@ namespace NZFarmers.Migrations
                     b.Property<int>("Method")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrderID")
-                        .HasColumnType("int");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -536,8 +574,6 @@ namespace NZFarmers.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("PaymentID");
-
-                    b.HasIndex("OrderID");
 
                     b.HasIndex("UserID");
 
@@ -647,44 +683,6 @@ namespace NZFarmers.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Order", b =>
-                {
-                    b.Property<int>("OrderID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderID"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("PaymentDetailPaymentID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("UserID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("UserID1")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrderID");
-
-                    b.HasIndex("PaymentDetailPaymentID");
-
-                    b.HasIndex("UserID");
-
-                    b.HasIndex("UserID1");
-
-                    b.ToTable("Orders");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -738,7 +736,7 @@ namespace NZFarmers.Migrations
 
             modelBuilder.Entity("NZFarmers.Models.DeliveryTracking", b =>
                 {
-                    b.HasOne("Order", "Order")
+                    b.HasOne("NZFarmers.Models.Order", "Order")
                         .WithOne("DeliveryTracking")
                         .HasForeignKey("NZFarmers.Models.DeliveryTracking", "OrderID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -800,6 +798,25 @@ namespace NZFarmers.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("NZFarmers.Models.Order", b =>
+                {
+                    b.HasOne("NZFarmers.Models.PaymentDetail", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("PaymentDetailPaymentID");
+
+                    b.HasOne("NZFarmers.Areas.Identity.Data.NZFarmersUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NZFarmers.Models.User", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("UserID1");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("NZFarmers.Models.OrderDetail", b =>
                 {
                     b.HasOne("NZFarmers.Models.FarmerProduct", "FarmerProduct")
@@ -808,7 +825,7 @@ namespace NZFarmers.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Order", "Order")
+                    b.HasOne("NZFarmers.Models.Order", "Order")
                         .WithMany("OrderDetails")
                         .HasForeignKey("OrderID")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -821,11 +838,6 @@ namespace NZFarmers.Migrations
 
             modelBuilder.Entity("NZFarmers.Models.PaymentDetail", b =>
                 {
-                    b.HasOne("Order", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderID")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("NZFarmers.Areas.Identity.Data.NZFarmersUser", "User")
                         .WithMany()
                         .HasForeignKey("UserID")
@@ -835,8 +847,6 @@ namespace NZFarmers.Migrations
                     b.HasOne("NZFarmers.Models.User", null)
                         .WithMany("PaymentDetails")
                         .HasForeignKey("UserID1");
-
-                    b.Navigation("Order");
 
                     b.Navigation("User");
                 });
@@ -869,25 +879,6 @@ namespace NZFarmers.Migrations
                     b.Navigation("Farmer");
                 });
 
-            modelBuilder.Entity("Order", b =>
-                {
-                    b.HasOne("NZFarmers.Models.PaymentDetail", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("PaymentDetailPaymentID");
-
-                    b.HasOne("NZFarmers.Areas.Identity.Data.NZFarmersUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NZFarmers.Models.User", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("UserID1");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("NZFarmers.Models.FarmerMarketEvent", b =>
                 {
                     b.Navigation("FarmerMarketParticipations");
@@ -912,6 +903,13 @@ namespace NZFarmers.Migrations
                     b.Navigation("Ratings");
                 });
 
+            modelBuilder.Entity("NZFarmers.Models.Order", b =>
+                {
+                    b.Navigation("DeliveryTracking");
+
+                    b.Navigation("OrderDetails");
+                });
+
             modelBuilder.Entity("NZFarmers.Models.PaymentDetail", b =>
                 {
                     b.Navigation("Orders");
@@ -929,13 +927,6 @@ namespace NZFarmers.Migrations
                     b.Navigation("PaymentDetails");
 
                     b.Navigation("Ratings");
-                });
-
-            modelBuilder.Entity("Order", b =>
-                {
-                    b.Navigation("DeliveryTracking");
-
-                    b.Navigation("OrderDetails");
                 });
 #pragma warning restore 612, 618
         }

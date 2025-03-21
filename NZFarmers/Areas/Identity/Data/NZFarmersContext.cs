@@ -35,8 +35,13 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
         // For example, you can rename the ASP.NET Identity table names and more.
         // Add your customizations after calling base.OnModelCreating(builder);
 
-        
 
+
+        builder.Entity<PaymentDetail>()
+            .HasOne(p => p.Order)
+            .WithMany() // if Order doesn't have a collection of PaymentDetails
+            .HasForeignKey(p => p.OrderID)
+            .OnDelete(DeleteBehavior.Restrict); // Disable cascade delete
 
         builder.Entity<OrderDetail>()
         .HasOne(od => od.Order)

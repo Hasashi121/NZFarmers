@@ -43,6 +43,10 @@ namespace NZFarmers.Models
         [Url(ErrorMessage = "Invalid URL for image.")]
         public string? ImageURL { get; set; }
 
+        // Add a property for file upload (not mapped to the database)
+        [NotMapped]
+        public IFormFile? ImageFile { get; set; }
+
         // Navigation for OrderDetail
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
     }

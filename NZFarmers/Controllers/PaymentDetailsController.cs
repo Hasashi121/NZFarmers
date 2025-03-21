@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NZFarmers.Areas.Identity.Data;
 using NZFarmers.Data;
 using NZFarmers.Models;
 
@@ -12,10 +14,12 @@ namespace NZFarmers.Controllers
     public class PaymentDetailsController : Controller
     {
         private readonly NZFarmersContext _context;
+        private readonly UserManager<NZFarmersUser> _userManager;
 
-        public PaymentDetailsController(NZFarmersContext context)
+        public PaymentDetailsController(NZFarmersContext context, UserManager<NZFarmersUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: PaymentDetails
@@ -47,7 +51,7 @@ namespace NZFarmers.Controllers
         // GET: PaymentDetails/Create
         public IActionResult Create()
         {
-            ViewData["UserID"] = new SelectList(_context.Users, "UserID", "Email");
+            ViewBag.OrderID = new SelectList(_context.Orders, "OrderID", "OrderID");
             ViewData["Status"] = new SelectList(Enum.GetValues(typeof(PaymentStatus)).Cast<PaymentStatus>());
             ViewData["Method"] = new SelectList(Enum.GetValues(typeof(PaymentMethod)).Cast<PaymentMethod>());
             return View();
@@ -56,8 +60,17 @@ namespace NZFarmers.Controllers
         // POST: PaymentDetails/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PaymentID,UserID,Amount,Status,Method,CreatedAt")] PaymentDetail paymentDetail)
+        public async Task<IActionResult> Create([Bind("OrderID,Amount,Status,Method")] PaymentDetail paymentDetail)
         {
+            var userId = _userManager.GetUserId(User);
+            if (userId == null)
+            {
+                return Challenge(); // User not logged in
+            }
+
+            paymentDetail.UserID = userId;
+            paymentDetail.CreatedAt = DateTime.UtcNow;
+
             if (!ModelState.IsValid)
             {
                 _context.Add(paymentDetail);
@@ -65,11 +78,13 @@ namespace NZFarmers.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["UserID"] = new SelectList(_context.Users, "UserID", "Email", paymentDetail.UserID);
+            ViewBag.OrderID = new SelectList(_context.Orders, "OrderID", "OrderID", paymentDetail.OrderID);
             ViewData["Status"] = new SelectList(Enum.GetValues(typeof(PaymentStatus)).Cast<PaymentStatus>(), paymentDetail.Status);
             ViewData["Method"] = new SelectList(Enum.GetValues(typeof(PaymentMethod)).Cast<PaymentMethod>(), paymentDetail.Method);
+
             return View(paymentDetail);
         }
+
 
 
         // GET: PaymentDetails/Edit/5

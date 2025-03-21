@@ -19,9 +19,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using NZFarmers.Areas.Identity.Data;
+using NZFarmers.Data;
+using NZFarmers.Models;  // For the custom domain User model
 
 namespace NZFarmers.Areas.Identity.Pages.Account
 {
+    [AllowAnonymous]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<NZFarmersUser> _signInManager;
@@ -30,13 +33,15 @@ namespace NZFarmers.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<NZFarmersUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly NZFarmersContext _context;
 
         public RegisterModel(
             UserManager<NZFarmersUser> userManager,
             IUserStore<NZFarmersUser> userStore,
             SignInManager<NZFarmersUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            NZFarmersContext context)  // Injecting our context
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,39 +49,18 @@ namespace NZFarmers.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public string ReturnUrl { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-
-
             [Required]
             [StringLength(100, ErrorMessage = "First name cannot exceed 100 characters.")]
             public string FirstName { get; set; }
@@ -95,29 +79,20 @@ namespace NZFarmers.Areas.Identity.Pages.Account
             [RegularExpression(@"^\+?\d{10,15}$", ErrorMessage = "Phone number must be between 10 and 15 digits.")]
             public string ContactNumber { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "The password must be at least 6 and at max 100 characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
             [Required(ErrorMessage = "Please select a role.")]
-            public RoleType Role { get; internal set; }
+            public Data.RoleType Role { get; internal set; }
         }
-
 
         public async Task OnGetAsync(string returnUrl = null)
         {
@@ -137,19 +112,32 @@ namespace NZFarmers.Areas.Identity.Pages.Account
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
-                // 🛠️ Store additional fields
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.ContactNumber = Input.ContactNumber;
                 user.Role = Input.Role;
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
-
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
                     await _userManager.AddToRoleAsync(user, Input.Role.ToString());
+
+                    // Create a corresponding record in your custom User table
+                    var domainUser = new NZFarmers.Models.User
+                    {
+                        IdentityUserId = user.Id,  // Link Identity user with the domain user record
+                        FirstName = Input.FirstName,
+                        LastName = Input.LastName,
+                        Email = Input.Email,
+                        Phone = Input.ContactNumber,
+                        Role = (Models.RoleType)Input.Role,
+                        CreatedAt = DateTime.UtcNow
+                    };
+
+                    _context.Users.Add(domainUser);
+                    await _context.SaveChangesAsync();
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -173,17 +161,13 @@ namespace NZFarmers.Areas.Identity.Pages.Account
                         return LocalRedirect(returnUrl);
                     }
                 }
-
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
             return Page();
         }
-
-
 
         private NZFarmersUser CreateUser()
         {

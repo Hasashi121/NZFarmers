@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +14,12 @@ namespace NZFarmers.Controllers
     public class FarmerProductsController : Controller
     {
         private readonly NZFarmersContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public FarmerProductsController(NZFarmersContext context)
+        public FarmerProductsController(NZFarmersContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: FarmerProducts
@@ -49,6 +52,8 @@ namespace NZFarmers.Controllers
         // GET: FarmerProducts/Create
         public IActionResult Create()
         {
+
+            // Populate dropdowns with valid data
             ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "FarmName");
             ViewData["ProductID"] = new SelectList(_context.Products, "ProductID", "ProductName");
             ViewData["Category"] = new SelectList(Enum.GetValues(typeof(ProductCategory)));
@@ -61,19 +66,40 @@ namespace NZFarmers.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FarmerProductID,FarmerID,ProductID,Category,Price,Stock,ImageURL")] FarmerProduct farmerProduct)
+        public async Task<IActionResult> Create(FarmerProduct farmerProduct)
         {
             if (!ModelState.IsValid)
             {
+                // If valid, handle file upload & save to DB
+                if (farmerProduct.ImageFile != null)
+                {
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                    Directory.CreateDirectory(uploadsFolder);
+                    string uniqueFileName = Guid.NewGuid().ToString()
+                        + "_" + Path.GetFileName(farmerProduct.ImageFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await farmerProduct.ImageFile.CopyToAsync(fileStream);
+                    }
+                    farmerProduct.ImageURL = "/uploads/" + uniqueFileName;
+                }
+
                 _context.Add(farmerProduct);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            // If we get here, ModelState was invalid. Re-populate the dropdowns:
             ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "FarmName", farmerProduct.FarmerID);
             ViewData["ProductID"] = new SelectList(_context.Products, "ProductID", "ProductName", farmerProduct.ProductID);
             ViewData["Category"] = new SelectList(Enum.GetValues(typeof(ProductCategory)), farmerProduct.Category);
+
+            // Return the same view with the re-populated data
             return View(farmerProduct);
         }
+
 
 
         // GET: FarmerProducts/Edit/5
@@ -108,6 +134,7 @@ namespace NZFarmers.Controllers
                 return NotFound();
             }
 
+            // Corrected logic:
             if (!ModelState.IsValid)
             {
                 try
@@ -128,10 +155,15 @@ namespace NZFarmers.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "Address", farmerProduct.FarmerID);
+
+            // ModelState is invalid, so re-populate dropdowns
+            ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "FarmName", farmerProduct.FarmerID);
             ViewData["ProductID"] = new SelectList(_context.Products, "ProductID", "ProductName", farmerProduct.ProductID);
+            ViewData["Category"] = new SelectList(Enum.GetValues(typeof(ProductCategory)), farmerProduct.Category);
+
             return View(farmerProduct);
         }
+
 
         // GET: FarmerProducts/Delete/5
         public async Task<IActionResult> Delete(int? id)

@@ -56,7 +56,7 @@ namespace NZFarmers.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ContentID,Title,Description,ContentURL,CreatedAt")] EducationalContent educationalContent)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _context.Add(educationalContent);
                 await _context.SaveChangesAsync();
@@ -93,7 +93,7 @@ namespace NZFarmers.Controllers
                 return NotFound();
             }
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 try
                 {

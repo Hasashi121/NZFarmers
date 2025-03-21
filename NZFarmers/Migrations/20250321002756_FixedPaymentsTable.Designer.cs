@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NZFarmers.Data;
 
@@ -11,9 +12,11 @@ using NZFarmers.Data;
 namespace NZFarmers.Migrations
 {
     [DbContext(typeof(NZFarmersContext))]
-    partial class NZFarmersContextModelSnapshot : ModelSnapshot
+    [Migration("20250321002756_FixedPaymentsTable")]
+    partial class FixedPaymentsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -522,7 +525,7 @@ namespace NZFarmers.Migrations
                     b.Property<int>("Method")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrderID")
+                    b.Property<int>("OrderID")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
@@ -824,7 +827,8 @@ namespace NZFarmers.Migrations
                     b.HasOne("Order", "Order")
                         .WithMany()
                         .HasForeignKey("OrderID")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("NZFarmers.Areas.Identity.Data.NZFarmersUser", "User")
                         .WithMany()

@@ -18,11 +18,11 @@
             </div>
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control"></select>
+                <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<OrderStatus>()"></select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LastUpdated" class="control-label"></label>
+                <label asp-for="LastUpdated" class="control-label">Last Updated</label>
                 <input asp-for="LastUpdated" class="form-control" />
                 <span asp-validation-for="LastUpdated" class="text-danger"></span>
             </div>

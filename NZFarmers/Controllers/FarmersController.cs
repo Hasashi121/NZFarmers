@@ -26,8 +26,10 @@ namespace NZFarmers.Controllers
         // GET: Farmers
         public async Task<IActionResult> Index()
         {
-            var farmersList = _context.Farmers.Include(f => f.User);
-            return View(await farmersList.ToListAsync());
+            var farmersList = await _context.Farmers
+                .Include(f => f.User)
+                .ToListAsync();
+            return View(farmersList);
         }
 
         // GET: Farmers/Details/5
@@ -69,13 +71,16 @@ namespace NZFarmers.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FarmName,Description,PhoneNumber,ProfileImage,Address,City,Region,ZipCode")] Farmers farmer)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            // Get the currently logged-in Identity user
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
             {
+                // Not logged in, or something unexpected
                 return RedirectToAction("Login", "Account");
             }
 
-            farmer.UserID = user.Id; // Ensure the logged-in user is linked
+            // Auto-set the user ID to the logged-in user's ID
+            farmer.UserID = currentUser.Id;
 
             if (!ModelState.IsValid)
             {
@@ -83,6 +88,8 @@ namespace NZFarmers.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            // If ModelState fails, re-show the form
             return View(farmer);
         }
 

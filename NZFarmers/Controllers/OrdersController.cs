@@ -2,21 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NZFarmers.Areas.Identity.Data;
 using NZFarmers.Data;
-using NZFarmers.Models;
 
 namespace NZFarmers.Controllers
 {
+    [Authorize]
     public class OrdersController : Controller
     {
         private readonly NZFarmersContext _context;
+        private readonly UserManager<NZFarmersUser> _userManager;
 
-        public OrdersController(NZFarmersContext context)
+        public OrdersController(NZFarmersContext context, UserManager<NZFarmersUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Orders
@@ -46,27 +51,30 @@ namespace NZFarmers.Controllers
         }
 
         // GET: Orders/Create
-        // GET: Orders/Create
         public IActionResult Create()
         {
-            ViewData["UserID"] = new SelectList(_context.Users, "UserID", "Email"); // Ensure correct mapping
+            ViewData["Status"] = new SelectList(Enum.GetValues(typeof(OrderStatus)));
             return View();
         }
 
         // POST: Orders/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderID,UserID,TotalPrice,Status,CreatedAt")] Order order)
+        public async Task<IActionResult> Create([Bind("TotalPrice,Status")] Order order)
         {
             if (!ModelState.IsValid)
             {
+                // Get current user ID
+                var userId = _userManager.GetUserId(User);
+                order.UserID = userId!;
+                order.CreatedAt = DateTime.UtcNow;
+
                 _context.Add(order);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["UserID"] = new SelectList(_context.Users, "UserID", "Email", order.UserID);
-            ViewData["Status"] = new SelectList(Enum.GetValues(typeof(OrderStatus)).Cast<OrderStatus>(), order.Status);
+            ViewData["Status"] = new SelectList(Enum.GetValues(typeof(OrderStatus)), order.Status);
             return View(order);
         }
 

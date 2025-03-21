@@ -22,7 +22,7 @@ namespace NZFarmers.Models
         public string? Description { get; set; }
 
         [Required(ErrorMessage = "Phone number is required.")]
-        [RegularExpression(@"^(\+64|0)[2-9]\d{7,9}$", ErrorMessage = "Must be a valid New Zealand phone number.")]
+        [RegularExpression(@"^(\+64|0)[2-9]\d{7,9}$", ErrorMessage = "Must be a valid New Zealand phone number. +64xxxxxxx")]
         public string PhoneNumber { get; set; } = string.Empty;
 
         [Url(ErrorMessage = "Invalid URL for profile image.")]

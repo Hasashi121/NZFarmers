@@ -13,6 +13,9 @@ namespace NZFarmers.Models
         [Key]
         public int UserID { get; set; }
 
+        [Required]
+        public string IdentityUserId { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "First name is required.")]
         [StringLength(100, ErrorMessage = "First name cannot exceed 100 characters.")]
         [RegularExpression(@"^[A-Z][a-z]+\s?[A-Za-z]*$", ErrorMessage = "First name must begin with a capital letter and contain only letters.")]
@@ -28,11 +31,7 @@ namespace NZFarmers.Models
         [StringLength(255, ErrorMessage = "Email address must not exceed 255 characters.")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "A password is required.")]
-        [DataType(DataType.Password)]
-        [MinLength(8, ErrorMessage = "Password must be at least 8 characters long.")]
-        public string PasswordHash { get; set; }
-
+        
         [Required(ErrorMessage = "User role is required.")]
         [EnumDataType(typeof(RoleType), ErrorMessage = "Invalid role specified.")]
         public RoleType Role { get; set; }

@@ -13,13 +13,10 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <!-- User Selection Dropdown -->
             <div class="form-group">
-                <label asp-for="UserID" class="control-label"></label>
-                <select asp-for="UserID" class="form-control" asp-items="@(ViewData["UserID"] as SelectList)">
-                    <option value="">-- Select User --</option>
-                </select>
-                <span asp-validation-for="UserID" class="text-danger"></span>
+                <label asp-for="OrderID" class="control-label"></label>
+                <select asp-for="OrderID" class="form-control" asp-items="ViewBag.OrderID"></select>
+                <span asp-validation-for="OrderID" class="text-danger"></span>
             </div>
 
             <!-- Amount Input -->
