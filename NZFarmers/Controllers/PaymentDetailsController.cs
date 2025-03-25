@@ -25,9 +25,12 @@ namespace NZFarmers.Controllers
         // GET: PaymentDetails
         public async Task<IActionResult> Index()
         {
-            var nZFarmersContext = _context.PaymentDetails.Include(p => p.User);
-            return View(await nZFarmersContext.ToListAsync());
+            var payments = _context.PaymentDetails
+                .Include(p => p.User) 
+                .Include(p => p.Order);
+            return View(await payments.ToListAsync());
         }
+
 
         // GET: PaymentDetails/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -39,6 +42,7 @@ namespace NZFarmers.Controllers
 
             var paymentDetail = await _context.PaymentDetails
                 .Include(p => p.User)
+                .Include(p => p.Order)
                 .FirstOrDefaultAsync(m => m.PaymentID == id);
             if (paymentDetail == null)
             {
@@ -51,6 +55,8 @@ namespace NZFarmers.Controllers
         // GET: PaymentDetails/Create
         public IActionResult Create()
         {
+            // Instead of letting the user select the UserID, we use the logged-in user's info.
+            // For OrderID, we populate a dropdown if needed.
             ViewBag.OrderID = new SelectList(_context.Orders, "OrderID", "OrderID");
             ViewData["Status"] = new SelectList(Enum.GetValues(typeof(PaymentStatus)).Cast<PaymentStatus>());
             ViewData["Method"] = new SelectList(Enum.GetValues(typeof(PaymentMethod)).Cast<PaymentMethod>());
@@ -62,12 +68,12 @@ namespace NZFarmers.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("OrderID,Amount,Status,Method")] PaymentDetail paymentDetail)
         {
+            // Automatically assign the current user's ID
             var userId = _userManager.GetUserId(User);
             if (userId == null)
             {
-                return Challenge(); // User not logged in
+                return Challenge(); // Forces login if not authenticated
             }
-
             paymentDetail.UserID = userId;
             paymentDetail.CreatedAt = DateTime.UtcNow;
 
@@ -81,11 +87,8 @@ namespace NZFarmers.Controllers
             ViewBag.OrderID = new SelectList(_context.Orders, "OrderID", "OrderID", paymentDetail.OrderID);
             ViewData["Status"] = new SelectList(Enum.GetValues(typeof(PaymentStatus)).Cast<PaymentStatus>(), paymentDetail.Status);
             ViewData["Method"] = new SelectList(Enum.GetValues(typeof(PaymentMethod)).Cast<PaymentMethod>(), paymentDetail.Method);
-
             return View(paymentDetail);
         }
-
-
 
         // GET: PaymentDetails/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -101,7 +104,7 @@ namespace NZFarmers.Controllers
                 return NotFound();
             }
 
-            ViewData["UserID"] = new SelectList(_context.Users.ToList(), "Id", "Email", paymentDetail.UserID);
+            ViewBag.OrderID = new SelectList(_context.Orders, "OrderID", "OrderID", paymentDetail.OrderID);
             ViewData["Status"] = new SelectList(Enum.GetValues(typeof(PaymentStatus)).Cast<PaymentStatus>(), paymentDetail.Status);
             ViewData["Method"] = new SelectList(Enum.GetValues(typeof(PaymentMethod)).Cast<PaymentMethod>(), paymentDetail.Method);
             return View(paymentDetail);
@@ -110,12 +113,20 @@ namespace NZFarmers.Controllers
         // POST: PaymentDetails/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PaymentID,UserID,Amount,Status,Method,CreatedAt")] PaymentDetail paymentDetail)
+        public async Task<IActionResult> Edit(int id, [Bind("PaymentID,OrderID,Amount,Status,Method,CreatedAt")] PaymentDetail paymentDetail)
         {
             if (id != paymentDetail.PaymentID)
             {
                 return NotFound();
             }
+
+            // Ensure that the logged-in user's ID is preserved
+            var userId = _userManager.GetUserId(User);
+            if (userId == null)
+            {
+                return Challenge();
+            }
+            paymentDetail.UserID = userId;
 
             if (!ModelState.IsValid)
             {
@@ -137,7 +148,8 @@ namespace NZFarmers.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserID"] = new SelectList(_context.Users.ToList(), "Id", "Email", paymentDetail.UserID);
+
+            ViewBag.OrderID = new SelectList(_context.Orders, "OrderID", "OrderID", paymentDetail.OrderID);
             ViewData["Status"] = new SelectList(Enum.GetValues(typeof(PaymentStatus)).Cast<PaymentStatus>(), paymentDetail.Status);
             ViewData["Method"] = new SelectList(Enum.GetValues(typeof(PaymentMethod)).Cast<PaymentMethod>(), paymentDetail.Method);
             return View(paymentDetail);
@@ -153,6 +165,7 @@ namespace NZFarmers.Controllers
 
             var paymentDetail = await _context.PaymentDetails
                 .Include(p => p.User)
+                .Include(p => p.Order)
                 .FirstOrDefaultAsync(m => m.PaymentID == id);
             if (paymentDetail == null)
             {

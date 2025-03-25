@@ -1,59 +1,55 @@
 ﻿@model IEnumerable<NZFarmers.Models.PaymentDetail>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Payment Details";
 }
 
-<h1>Index</h1>
+<h1>Payment Details</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Method)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
+            <th>User Email</th>
+            <th>Order ID</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Method</th>
+            <th>CreatedAt</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Method)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.PaymentID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PaymentID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.PaymentID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var payment in Model)
+        {
+            <tr>
+                <td>
+                    @payment.User?.Email
+                </td>
+                <td>
+                    @payment.OrderID
+                </td>
+                <td>
+                    @payment.Amount.ToString("C")
+                </td>
+                <td>
+                    @payment.Status
+                </td>
+                <td>
+                    @payment.Method
+                </td>
+                <td>
+                    @payment.CreatedAt
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@payment.PaymentID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@payment.PaymentID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@payment.PaymentID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

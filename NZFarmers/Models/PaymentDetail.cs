@@ -25,14 +25,9 @@ namespace NZFarmers.Models
         [Key]
         public int PaymentID { get; set; }
 
-        // Optional Order reference for PaymentDetail
-        public int? OrderID { get; set; }  // Nullable to avoid errors
-        [ForeignKey("OrderID")]
-        public virtual Order? Order { get; set; }  // Single Order reference
-
-
         [Required(ErrorMessage = "User association is required.")]
-        public string UserID { get; set; }
+        public string UserID { get; set; } = string.Empty;
+
         [ForeignKey(nameof(UserID))]
         public virtual NZFarmersUser User { get; set; } = default!;
 
@@ -49,6 +44,11 @@ namespace NZFarmers.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public virtual ICollection<Order>? Orders { get; set; } = new List<Order>();
+        // Assume each payment is linked to one Order:
+        [Required(ErrorMessage = "Order is required.")]
+        public int OrderID { get; set; }
+
+        [ForeignKey(nameof(OrderID))]
+        public virtual Order Order { get; set; } = default!;
     }
 }

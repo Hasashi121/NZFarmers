@@ -10,7 +10,7 @@ namespace NZFarmers.Models
         public int FarmerID { get; set; }
 
         [Required(ErrorMessage = "User association is required.")]
-        public string UserID { get; set; }
+        public string UserID { get; set; } = string.Empty;
         [ForeignKey(nameof(UserID))]
         public virtual NZFarmersUser User { get; set; } = default!;
 
@@ -28,19 +28,20 @@ namespace NZFarmers.Models
         [Url(ErrorMessage = "Invalid URL for profile image.")]
         public string? ProfileImage { get; set; }
 
-        // Address fields merged from FarmersLocation
+        // For file uploads (not stored in DB)
+        [NotMapped]
+        public IFormFile? ProfileImageFile { get; set; }
+
         [Required(ErrorMessage = "Address is required.")]
         [StringLength(255, ErrorMessage = "Address cannot exceed 255 characters.")]
         public string Address { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "City is required.")]
         [StringLength(100, ErrorMessage = "City cannot exceed 100 characters.")]
-        [RegularExpression(@"^[A-Za-z\s'-]+$", ErrorMessage = "City must contain only letters, spaces, apostrophes, or hyphens.")]
         public string City { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Region is required.")]
         [StringLength(100, ErrorMessage = "Region cannot exceed 100 characters.")]
-        [RegularExpression(@"^[A-Za-z\s'-]+$", ErrorMessage = "Region must contain only letters, spaces, apostrophes, or hyphens.")]
         public string Region { get; set; } = string.Empty;
 
         [StringLength(10, ErrorMessage = "Zip code cannot exceed 10 characters.")]

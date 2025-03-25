@@ -1,13 +1,14 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NZFarmers.Areas.Identity.Data;
 using NZFarmers.Data;
 using NZFarmers.Models;
-using NZFarmers.Areas.Identity.Data;
 
 namespace NZFarmers.Controllers
 {
@@ -16,11 +17,15 @@ namespace NZFarmers.Controllers
     {
         private readonly NZFarmersContext _context;
         private readonly UserManager<NZFarmersUser> _userManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public FarmersController(NZFarmersContext context, UserManager<NZFarmersUser> userManager)
+        public FarmersController(NZFarmersContext context,
+                                 UserManager<NZFarmersUser> userManager,
+                                 IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _userManager = userManager;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Farmers
@@ -35,16 +40,12 @@ namespace NZFarmers.Controllers
         // GET: Farmers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var farmer = await _context.Farmers.Include(f => f.User).FirstOrDefaultAsync(m => m.FarmerID == id);
-            if (farmer == null)
-            {
-                return NotFound();
-            }
+            var farmer = await _context.Farmers
+                .Include(f => f.User)
+                .FirstOrDefaultAsync(m => m.FarmerID == id);
+            if (farmer == null) return NotFound();
 
             return View(farmer);
         }
@@ -52,15 +53,17 @@ namespace NZFarmers.Controllers
         // GET: Farmers/Create
         public async Task<IActionResult> Create()
         {
+            // Ensure the user is logged in
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return RedirectToAction("Login", "Account"); // Redirect if not logged in
+                return RedirectToAction("Login", "Account");
             }
 
+            // Pre-set the UserID to the current user
             var model = new Farmers
             {
-                UserID = user.Id // Automatically set the logged-in UserID
+                UserID = user.Id
             };
 
             return View(model);
@@ -69,66 +72,90 @@ namespace NZFarmers.Controllers
         // POST: Farmers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FarmName,Description,PhoneNumber,ProfileImage,Address,City,Region,ZipCode")] Farmers farmer)
+        public async Task<IActionResult> Create([Bind("FarmName,Description,PhoneNumber,ProfileImage,ProfileImageFile,Address,City,Region,ZipCode")] Farmers farmer)
         {
-            // Get the currently logged-in Identity user
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null)
             {
-                // Not logged in, or something unexpected
                 return RedirectToAction("Login", "Account");
             }
-
-            // Auto-set the user ID to the logged-in user's ID
             farmer.UserID = currentUser.Id;
 
             if (!ModelState.IsValid)
             {
+                // Handle file upload
+                if (farmer.ProfileImageFile != null && farmer.ProfileImageFile.Length > 0)
+                {
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                    Directory.CreateDirectory(uploadsFolder); // Ensure folder exists
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_"
+                        + Path.GetFileName(farmer.ProfileImageFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await farmer.ProfileImageFile.CopyToAsync(fileStream);
+                    }
+
+                    // Save the relative path in the DB
+                    farmer.ProfileImage = "/uploads/" + uniqueFileName;
+                }
+
                 _context.Add(farmer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            // If ModelState fails, re-show the form
+            // If ModelState is invalid, show the form again
             return View(farmer);
         }
 
         // GET: Farmers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var farmer = await _context.Farmers.FindAsync(id);
-            if (farmer == null)
-            {
-                return NotFound();
-            }
+            if (farmer == null) return NotFound();
+
             return View(farmer);
         }
 
         // POST: Farmers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FarmerID,FarmName,Description,PhoneNumber,ProfileImage,Address,City,Region,ZipCode")] Farmers farmer)
+        public async Task<IActionResult> Edit(int id, [Bind("FarmerID,FarmName,Description,PhoneNumber,ProfileImage,ProfileImageFile,Address,City,Region,ZipCode")] Farmers farmer)
         {
-            if (id != farmer.FarmerID)
-            {
-                return NotFound();
-            }
+            if (id != farmer.FarmerID) return NotFound();
 
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return RedirectToAction("Login", "Account");
             }
-
-            farmer.UserID = user.Id; // Ensure user ID remains the same
+            // Keep the same user ID
+            farmer.UserID = user.Id;
 
             if (!ModelState.IsValid)
             {
+                // If a new file was uploaded, overwrite the old image
+                if (farmer.ProfileImageFile != null && farmer.ProfileImageFile.Length > 0)
+                {
+                    string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+                    Directory.CreateDirectory(uploadsFolder);
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_"
+                        + Path.GetFileName(farmer.ProfileImageFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await farmer.ProfileImageFile.CopyToAsync(stream);
+                    }
+
+                    // Update the ProfileImage path
+                    farmer.ProfileImage = "/uploads/" + uniqueFileName;
+                }
+
                 try
                 {
                     _context.Update(farmer);
@@ -153,16 +180,12 @@ namespace NZFarmers.Controllers
         // GET: Farmers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var farmer = await _context.Farmers.Include(f => f.User).FirstOrDefaultAsync(m => m.FarmerID == id);
-            if (farmer == null)
-            {
-                return NotFound();
-            }
+            var farmer = await _context.Farmers
+                .Include(f => f.User)
+                .FirstOrDefaultAsync(m => m.FarmerID == id);
+            if (farmer == null) return NotFound();
 
             return View(farmer);
         }
@@ -176,9 +199,8 @@ namespace NZFarmers.Controllers
             if (farmer != null)
             {
                 _context.Farmers.Remove(farmer);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
