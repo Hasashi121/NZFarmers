@@ -2,8 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using NZFarmers.Areas.Identity.Data;
 using NZFarmers.Data;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Authentication.Google;
+
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
+
 
 // Get the connection string
 var connectionString = builder.Configuration.GetConnectionString("NZFarmersContextConnection")
@@ -13,6 +18,8 @@ var connectionString = builder.Configuration.GetConnectionString("NZFarmersConte
 builder.Services.AddDbContext<NZFarmersContext>(options =>
     options.UseSqlServer(connectionString));
 
+
+
 // Add Identity
 builder.Services.AddDefaultIdentity<NZFarmersUser>(options =>
 {
@@ -21,8 +28,22 @@ builder.Services.AddDefaultIdentity<NZFarmersUser>(options =>
 .AddRoles<IdentityRole>() // Enable roles
 .AddEntityFrameworkStores<NZFarmersContext>();
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+})
+.AddGoogle(options =>
+{
+    options.ClientId = configuration["Authentication:Google:ClientId"] ?? "147995618696-9r7uer4cd4itu9hbmaa1ingcqcr26kln.apps.googleusercontent.com";
+    options.ClientSecret = configuration["Authentication:Google:ClientSecret"] ?? "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";
+
+});
+
 // Add services
 builder.Services.AddControllersWithViews();
+
+
 
 var app = builder.Build();
 
@@ -49,6 +70,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.UseAuthentication();
+app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",
