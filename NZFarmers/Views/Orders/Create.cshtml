@@ -12,11 +12,14 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+            <input type="hidden" asp-for="UserID" value="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value" />
+
             <div class="form-group">
                 <label asp-for="TotalPrice" class="control-label">Total Price</label>
                 <input asp-for="TotalPrice" class="form-control" />
                 <span asp-validation-for="TotalPrice" class="text-danger"></span>
             </div>
+
 
             <div class="form-group">
                 <label asp-for="Status" class="control-label">Order Status</label>

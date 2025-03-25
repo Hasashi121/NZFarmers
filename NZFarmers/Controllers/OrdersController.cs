@@ -92,7 +92,6 @@ namespace NZFarmers.Controllers
             {
                 return NotFound();
             }
-            ViewData["UserID"] = new SelectList(_context.Users, "Id", "Id", order.UserID);
             return View(order);
         }
 
@@ -101,36 +100,30 @@ namespace NZFarmers.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderID,UserID,TotalPrice,Status,CreatedAt")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderID,TotalPrice,Status,CreatedAt")] Order order)
         {
-            if (id != order.OrderID)
-            {
-                return NotFound();
-            }
+            if (id != order.OrderID) return NotFound();
 
             if (!ModelState.IsValid)
             {
                 try
                 {
+                    var userId = _userManager.GetUserId(User);
+                    order.UserID = userId!;
                     _context.Update(order);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OrderExists(order.OrderID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!OrderExists(order.OrderID)) return NotFound();
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserID"] = new SelectList(_context.Users, "Id", "Id", order.UserID);
+
             return View(order);
         }
+
 
         // GET: Orders/Delete/5
         public async Task<IActionResult> Delete(int? id)
