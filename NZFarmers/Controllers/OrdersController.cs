@@ -158,7 +158,20 @@ namespace NZFarmers.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        [HttpGet]
+        public IActionResult PaymentSuccess()
+        {
+            // You can show a confirmation page or process post-payment logic here.
+            return View();
+        }
 
+        // GET: Orders/PaymentCanceled
+        [HttpGet]
+        public IActionResult PaymentCanceled()
+        {
+            // Inform the user that the payment was canceled and perhaps offer to try again.
+            return View();
+        }
         private bool OrderExists(int id)
         {
             return _context.Orders.Any(e => e.OrderID == id);

@@ -1,0 +1,82 @@
+﻿@model NZFarmers.ViewModels.CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Review Your Order";
+}
+
+<h2>Review Your Order</h2>
+
+@if (Model.CartItems.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CartItems)
+            {
+                <tr>
+                    <td>@item.FarmerProduct?.Product?.ProductName</td>
+                    <td>@(item.FarmerProduct?.Price.ToString("C") ?? "N/A")</td>
+                    <td>@item.Quantity</td>
+                    <td>@((item.FarmerProduct?.Price ?? 0) * item.Quantity).ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Your cart is empty.</p>
+}
+
+<hr />
+
+<h3>Shipping Details</h3>
+<form asp-action="ReviewOrder" method="post">
+    <div class="mb-3">
+        <label asp-for="ShippingAddress" class="form-label"></label>
+        <input asp-for="ShippingAddress" class="form-control" />
+        <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="City" class="form-label"></label>
+        <input asp-for="City" class="form-control" />
+        <span asp-validation-for="City" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Region" class="form-label"></label>
+        <input asp-for="Region" class="form-control" />
+        <span asp-validation-for="Region" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ZipCode" class="form-label"></label>
+        <input asp-for="ZipCode" class="form-control" />
+        <span asp-validation-for="ZipCode" class="text-danger"></span>
+    </div>
+
+    <h3>Payment Method</h3>
+    <div class="mb-3">
+        <label asp-for="PaymentMethod" class="form-label"></label>
+        <select asp-for="PaymentMethod" class="form-select">
+            @foreach (var method in Enum.GetValues(typeof(NZFarmers.Models.PaymentMethod)))
+            {
+                <option value="@method">@method</option>
+            }
+        </select>
+        <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Confirm &amp; Pay</button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

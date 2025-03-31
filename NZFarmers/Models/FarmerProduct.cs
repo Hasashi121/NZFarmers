@@ -47,6 +47,9 @@ namespace NZFarmers.Models
         [NotMapped]
         public IFormFile? ImageFile { get; set; }
 
+        public virtual ICollection<ShoppingCartItem> ShoppingCartItems { get; set; }
+       = new List<ShoppingCartItem>();
+
         // Navigation for OrderDetail
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
     }

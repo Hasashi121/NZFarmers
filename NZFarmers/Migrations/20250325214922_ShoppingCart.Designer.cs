@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NZFarmers.Data;
 
@@ -11,9 +12,11 @@ using NZFarmers.Data;
 namespace NZFarmers.Migrations
 {
     [DbContext(typeof(NZFarmersContext))]
-    partial class NZFarmersContextModelSnapshot : ModelSnapshot
+    [Migration("20250325214922_ShoppingCart")]
+    partial class ShoppingCart
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -601,36 +604,6 @@ namespace NZFarmers.Migrations
                     b.ToTable("Ratings");
                 });
 
-            modelBuilder.Entity("NZFarmers.Models.ShoppingCartItem", b =>
-                {
-                    b.Property<int>("ShoppingCartItemID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShoppingCartItemID"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("FarmerProductID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("ShoppingCartItemID");
-
-                    b.HasIndex("FarmerProductID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("ShoppingCartItems");
-                });
-
             modelBuilder.Entity("NZFarmers.Models.User", b =>
                 {
                     b.Property<int>("UserID")
@@ -886,25 +859,6 @@ namespace NZFarmers.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("NZFarmers.Models.ShoppingCartItem", b =>
-                {
-                    b.HasOne("NZFarmers.Models.FarmerProduct", "FarmerProduct")
-                        .WithMany("ShoppingCartItems")
-                        .HasForeignKey("FarmerProductID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("NZFarmers.Areas.Identity.Data.NZFarmersUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("FarmerProduct");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("NZFarmers.Models.User", b =>
                 {
                     b.HasOne("NZFarmers.Models.Farmers", "Farmer")
@@ -942,8 +896,6 @@ namespace NZFarmers.Migrations
             modelBuilder.Entity("NZFarmers.Models.FarmerProduct", b =>
                 {
                     b.Navigation("OrderDetails");
-
-                    b.Navigation("ShoppingCartItems");
                 });
 
             modelBuilder.Entity("NZFarmers.Models.Farmers", b =>

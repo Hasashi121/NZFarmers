@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NZFarmers.Areas.Identity.Data;
 using NZFarmers.Models;
+using NZFarmers.ViewModels;
 using System.Reflection.Emit;
 
 namespace NZFarmers.Data;
@@ -14,7 +15,11 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
     {
 
     }
+
+    public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
+
     public DbSet<User> Users { get; set; }
+
     public DbSet<Farmers> Farmers { get; set; }
     public DbSet<Products> Products { get; set; }
     public DbSet<FarmerProduct> FarmerProducts { get; set; }
@@ -75,6 +80,20 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
             .HasOne(fmp => fmp.FarmerMarketEvent)
             .WithMany(e => e.FarmerMarketParticipations)
             .HasForeignKey(fmp => fmp.EventID);
+
+        builder.Entity<ShoppingCartItem>()
+        .HasOne(sci => sci.FarmerProduct)
+        .WithMany(fp => fp.ShoppingCartItems)
+        .HasForeignKey(sci => sci.FarmerProductID)
+        .OnDelete(DeleteBehavior.Restrict);
+
+
+        // Similarly, if needed for ShoppingCartItem -> User
+        builder.Entity<ShoppingCartItem>()
+            .HasOne(sci => sci.User)
+            .WithMany()  // or a collection if you want
+            .HasForeignKey(sci => sci.UserID)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
 public DbSet<NZFarmers.Models.FarmerMarkets> FarmerMarkets { get; set; } = default!;
