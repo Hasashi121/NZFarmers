@@ -51,9 +51,11 @@
                             <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                         </div>
 
+                        <!-- Updated to reference the correct RoleType namespace -->
                         <div class="mb-4">
                             <label asp-for="Input.Role" class="form-label">Role</label>
-                            <select asp-for="Input.Role" class="form-select" asp-items="Html.GetEnumSelectList<NZFarmers.Models.RoleType>()">
+                            <select asp-for="Input.Role" class="form-select"
+                                    asp-items="Html.GetEnumSelectList<NZFarmers.Areas.Identity.Data.RoleType>()">
                                 <option value="">-- Select Role --</option>
                             </select>
                             <span asp-validation-for="Input.Role" class="text-danger"></span>

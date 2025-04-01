@@ -21,9 +21,15 @@
             @foreach (var item in Model.CartItems)
             {
                 <tr>
-                    <td>@item.FarmerProduct?.Product?.ProductName</td>
+                    <!-- Replace the old Product reference with FarmerProduct.ProductName -->
+                    <td>@(item.FarmerProduct?.ProductName ?? "N/A")</td>
+
+                    <!-- Use FarmerProduct.Price directly -->
                     <td>@(item.FarmerProduct?.Price.ToString("C") ?? "N/A")</td>
+
                     <td>@item.Quantity</td>
+
+                    <!-- Calculate subtotal -->
                     <td>@((item.FarmerProduct?.Price ?? 0) * item.Quantity).ToString("C")</td>
                 </tr>
             }

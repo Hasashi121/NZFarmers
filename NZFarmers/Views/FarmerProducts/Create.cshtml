@@ -9,27 +9,20 @@
 <form asp-action="Create" enctype="multipart/form-data" method="post">
     <div class="form-group">
         <label asp-for="FarmerID" class="control-label"></label>
-        <select asp-for="FarmerID"
-                class="form-control"
-                asp-items="@(ViewData["FarmerID"] as SelectList)">
+        <select asp-for="FarmerID" class="form-control" asp-items="@(ViewData["FarmerID"] as SelectList)">
         </select>
         <span asp-validation-for="FarmerID" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="ProductID" class="control-label"></label>
-        <select asp-for="ProductID"
-                class="form-control"
-                asp-items="@(ViewData["ProductID"] as SelectList)">
-        </select>
-        <span asp-validation-for="ProductID" class="text-danger"></span>
+        <label asp-for="ProductName" class="control-label"></label>
+        <input asp-for="ProductName" class="form-control" />
+        <span asp-validation-for="ProductName" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label asp-for="Category" class="control-label"></label>
-        <select asp-for="Category"
-                class="form-control"
-                asp-items="@(ViewData["Category"] as SelectList)">
+        <select asp-for="Category" class="form-control" asp-items="@(ViewData["Category"] as SelectList)">
         </select>
         <span asp-validation-for="Category" class="text-danger"></span>
     </div>

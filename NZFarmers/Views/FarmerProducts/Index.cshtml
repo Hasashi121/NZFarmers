@@ -7,18 +7,20 @@
 <h1>Farmer Products</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
+    <a asp-controller="FarmerProducts" asp-action="Create">Create New</a>
+
+
 </p>
 
 <table class="table">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.Farmer)</th>
-            <th>@Html.DisplayNameFor(model => model.Product)</th>
-            <th>@Html.DisplayNameFor(model => model.Price)</th>
-            <th>@Html.DisplayNameFor(model => model.Stock)</th>
-            <th>@Html.DisplayNameFor(model => model.Category)</th>
-            <th>@Html.DisplayNameFor(model => model.ImageURL)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Farmer)</th>
+            <th>@Html.DisplayNameFor(model => model.First().ProductName)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Price)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Stock)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Category)</th>
+            <th>@Html.DisplayNameFor(model => model.First().ImageURL)</th>
             <th>Add to Cart</th>
             <th></th>
         </tr>
@@ -28,7 +30,7 @@
         {
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.Farmer.Address)</td>
-                <td>@Html.DisplayFor(modelItem => item.Product.ProductName)</td>
+                <td>@Html.DisplayFor(modelItem => item.ProductName)</td>
                 <td>@Html.DisplayFor(modelItem => item.Price)</td>
                 <td>@Html.DisplayFor(modelItem => item.Stock)</td>
                 <td>@Html.DisplayFor(modelItem => item.Category)</td>
@@ -58,4 +60,3 @@
         }
     </tbody>
 </table>
-

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using NZFarmers.Models;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace NZFarmers.Areas.Identity.Data
@@ -33,5 +35,7 @@ namespace NZFarmers.Areas.Identity.Data
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        // Navigation property for ratings
+        public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
     }
 }

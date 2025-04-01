@@ -20,7 +20,6 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using NZFarmers.Areas.Identity.Data;
 using NZFarmers.Data;
-using NZFarmers.Models;  // For the custom domain User model
 
 namespace NZFarmers.Areas.Identity.Pages.Account
 {
@@ -33,15 +32,13 @@ namespace NZFarmers.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<NZFarmersUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly NZFarmersContext _context;
 
         public RegisterModel(
             UserManager<NZFarmersUser> userManager,
             IUserStore<NZFarmersUser> userStore,
             SignInManager<NZFarmersUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender,
-            NZFarmersContext context)  // Injecting our context
+            IEmailSender emailSender)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -49,7 +46,6 @@ namespace NZFarmers.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-            _context = context;
         }
 
         [BindProperty]
@@ -91,7 +87,7 @@ namespace NZFarmers.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             [Required(ErrorMessage = "Please select a role.")]
-            public Data.RoleType Role { get; internal set; }
+            public RoleType Role { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -112,32 +108,20 @@ namespace NZFarmers.Areas.Identity.Pages.Account
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
+                // Assign extra properties
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
                 user.ContactNumber = Input.ContactNumber;
                 user.Role = Input.Role;
+                user.CreatedAt = DateTime.UtcNow;
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    await _userManager.AddToRoleAsync(user, Input.Role.ToString());
-
-                    // Create a corresponding record in your custom User table
-                    var domainUser = new NZFarmers.Models.User
-                    {
-                        IdentityUserId = user.Id,  // Link Identity user with the domain user record
-                        FirstName = Input.FirstName,
-                        LastName = Input.LastName,
-                        Email = Input.Email,
-                        Phone = Input.ContactNumber,
-                        Role = (Models.RoleType)Input.Role,
-                        CreatedAt = DateTime.UtcNow
-                    };
-
-                    _context.Users.Add(domainUser);
-                    await _context.SaveChangesAsync();
+                    // Assign an ASP.NET Identity role if you're using the built-in role system
+                    await _userManager.AddToRoleAsync(user, user.Role.ToString());
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -166,6 +150,7 @@ namespace NZFarmers.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
+            // If we got this far, something failed, redisplay form
             return Page();
         }
 

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -25,26 +25,37 @@ namespace NZFarmers.Controllers
         // GET: FarmerProducts
         public async Task<IActionResult> Index()
         {
-            var nZFarmersContext = _context.FarmerProducts.Include(f => f.Farmer).Include(f => f.Product);
-            return View(await nZFarmersContext.ToListAsync());
+            try
+            {
+                var farmerProducts = await _context.FarmerProducts
+                    .Include(f => f.Farmer)
+                    .ToListAsync();
+
+                // Ensure we return a valid list even if it's empty
+                return View(farmerProducts ?? new List<FarmerProduct>());
+            }
+            catch (Exception ex)
+            {
+                // Optional: log exception here using a logger
+                // Fallback to empty list to avoid view crash
+                return View(new List<FarmerProduct>());
+            }
         }
+
 
         // GET: FarmerProducts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
+            // Removed .Include(f => f.Product)
             var farmerProduct = await _context.FarmerProducts
                 .Include(f => f.Farmer)
-                .Include(f => f.Product)
                 .FirstOrDefaultAsync(m => m.FarmerProductID == id);
+
             if (farmerProduct == null)
-            {
                 return NotFound();
-            }
 
             return View(farmerProduct);
         }
@@ -52,29 +63,28 @@ namespace NZFarmers.Controllers
         // GET: FarmerProducts/Create
         public IActionResult Create()
         {
-
-            // Populate dropdowns with valid data
             ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "FarmName");
-            ViewData["ProductID"] = new SelectList(_context.Products, "ProductID", "ProductName");
             ViewData["Category"] = new SelectList(Enum.GetValues(typeof(ProductCategory)));
-            return View();
+
+            return View(); 
         }
 
 
+
         // POST: FarmerProducts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(FarmerProduct farmerProduct)
         {
+            // Typical pattern: if valid, save; otherwise re-show form
             if (!ModelState.IsValid)
             {
-                // If valid, handle file upload & save to DB
+                // Handle file upload if present
                 if (farmerProduct.ImageFile != null)
                 {
                     string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
                     Directory.CreateDirectory(uploadsFolder);
+
                     string uniqueFileName = Guid.NewGuid().ToString()
                         + "_" + Path.GetFileName(farmerProduct.ImageFile.FileName);
                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
@@ -91,50 +101,36 @@ namespace NZFarmers.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // If we get here, ModelState was invalid. Re-populate the dropdowns:
+            // If we got here, ModelState was invalid. Re-populate the dropdowns:
             ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "FarmName", farmerProduct.FarmerID);
-            ViewData["ProductID"] = new SelectList(_context.Products, "ProductID", "ProductName", farmerProduct.ProductID);
             ViewData["Category"] = new SelectList(Enum.GetValues(typeof(ProductCategory)), farmerProduct.Category);
 
-            // Return the same view with the re-populated data
             return View(farmerProduct);
         }
-
-
 
         // GET: FarmerProducts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var farmerProduct = await _context.FarmerProducts.FindAsync(id);
             if (farmerProduct == null)
-            {
                 return NotFound();
-            }
+
             ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "FarmName", farmerProduct.FarmerID);
-            ViewData["ProductID"] = new SelectList(_context.Products, "ProductID", "ProductName", farmerProduct.ProductID);
             ViewData["Category"] = new SelectList(Enum.GetValues(typeof(ProductCategory)), farmerProduct.Category);
             return View(farmerProduct);
         }
 
-
         // POST: FarmerProducts/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FarmerProductID,FarmerID,ProductID,Price,Stock,ImageURL")] FarmerProduct farmerProduct)
+        public async Task<IActionResult> Edit(int id, [Bind("FarmerProductID,FarmerID,Category,Price,Stock,ImageURL")] FarmerProduct farmerProduct)
         {
             if (id != farmerProduct.FarmerProductID)
-            {
                 return NotFound();
-            }
 
-            // Corrected logic:
             if (!ModelState.IsValid)
             {
                 try
@@ -145,42 +141,31 @@ namespace NZFarmers.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!FarmerProductExists(farmerProduct.FarmerProductID))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
 
-            // ModelState is invalid, so re-populate dropdowns
+            // ModelState invalid; re-populate dropdowns
             ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "FarmName", farmerProduct.FarmerID);
-            ViewData["ProductID"] = new SelectList(_context.Products, "ProductID", "ProductName", farmerProduct.ProductID);
             ViewData["Category"] = new SelectList(Enum.GetValues(typeof(ProductCategory)), farmerProduct.Category);
-
             return View(farmerProduct);
         }
-
 
         // GET: FarmerProducts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var farmerProduct = await _context.FarmerProducts
                 .Include(f => f.Farmer)
-                .Include(f => f.Product)
                 .FirstOrDefaultAsync(m => m.FarmerProductID == id);
+
             if (farmerProduct == null)
-            {
                 return NotFound();
-            }
 
             return View(farmerProduct);
         }
@@ -194,9 +179,8 @@ namespace NZFarmers.Controllers
             if (farmerProduct != null)
             {
                 _context.FarmerProducts.Remove(farmerProduct);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

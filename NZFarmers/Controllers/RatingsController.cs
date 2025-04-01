@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NZFarmers.Data;
 using NZFarmers.Models;
+using NZFarmers.Areas.Identity.Data; // for NZFarmersUser if needed
 
 namespace NZFarmers.Controllers
 {
@@ -22,26 +22,26 @@ namespace NZFarmers.Controllers
         // GET: Ratings
         public async Task<IActionResult> Index()
         {
-            var nZFarmersContext = _context.Ratings.Include(r => r.Farmer).Include(r => r.User);
-            return View(await nZFarmersContext.ToListAsync());
+            var ratingsQuery = _context.Ratings
+                .Include(r => r.Farmer)
+                .Include(r => r.User); // references NZFarmersUser
+
+            return View(await ratingsQuery.ToListAsync());
         }
 
         // GET: Ratings/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var rating = await _context.Ratings
                 .Include(r => r.Farmer)
                 .Include(r => r.User)
                 .FirstOrDefaultAsync(m => m.RatingID == id);
+
             if (rating == null)
-            {
                 return NotFound();
-            }
 
             return View(rating);
         }
@@ -49,26 +49,32 @@ namespace NZFarmers.Controllers
         // GET: Ratings/Create
         public IActionResult Create()
         {
-            ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "Address");
-            ViewData["UserID"] = new SelectList(_context.Users, "UserID", "Email");
+            // Dropdown for Farmer
+            ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "FarmName");
+
+            // Dropdown for User (Identity). 
+            // NOTE: This only works if your NZFarmersContext includes:
+            // public DbSet<NZFarmersUser> Users { get; set; }
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
+
             return View();
         }
 
         // POST: Ratings/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RatingID,UserID,FarmerID,RatingValue,Comment,CreatedAt")] Rating rating)
+        public async Task<IActionResult> Create([Bind("RatingID,UserId,FarmerID,RatingValue,Comment,CreatedAt")] Rating rating)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _context.Add(rating);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "Address", rating.FarmerID);
-            ViewData["UserID"] = new SelectList(_context.Users, "UserID", "Email", rating.UserID);
+
+            // ModelState invalid, so re-populate dropdowns
+            ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "FarmName", rating.FarmerID);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", rating.UserId);
             return View(rating);
         }
 
@@ -76,33 +82,26 @@ namespace NZFarmers.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var rating = await _context.Ratings.FindAsync(id);
             if (rating == null)
-            {
                 return NotFound();
-            }
-            ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "Address", rating.FarmerID);
-            ViewData["UserID"] = new SelectList(_context.Users, "UserID", "Email", rating.UserID);
+
+            ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "FarmName", rating.FarmerID);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", rating.UserId);
             return View(rating);
         }
 
         // POST: Ratings/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("RatingID,UserID,FarmerID,RatingValue,Comment,CreatedAt")] Rating rating)
+        public async Task<IActionResult> Edit(int id, [Bind("RatingID,UserId,FarmerID,RatingValue,Comment,CreatedAt")] Rating rating)
         {
             if (id != rating.RatingID)
-            {
                 return NotFound();
-            }
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 try
                 {
@@ -112,18 +111,16 @@ namespace NZFarmers.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!RatingExists(rating.RatingID))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "Address", rating.FarmerID);
-            ViewData["UserID"] = new SelectList(_context.Users, "UserID", "Email", rating.UserID);
+
+            // ModelState invalid; re-populate dropdowns
+            ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "FarmName", rating.FarmerID);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", rating.UserId);
             return View(rating);
         }
 
@@ -131,18 +128,15 @@ namespace NZFarmers.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var rating = await _context.Ratings
                 .Include(r => r.Farmer)
                 .Include(r => r.User)
                 .FirstOrDefaultAsync(m => m.RatingID == id);
+
             if (rating == null)
-            {
                 return NotFound();
-            }
 
             return View(rating);
         }
@@ -156,9 +150,8 @@ namespace NZFarmers.Controllers
             if (rating != null)
             {
                 _context.Ratings.Remove(rating);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

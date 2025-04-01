@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using NZFarmers.Areas.Identity.Data;
+using NZFarmers.Areas.Identity.Data; // Assuming this is your custom Identity user
 
 namespace NZFarmers.Models
 {
@@ -10,13 +10,15 @@ namespace NZFarmers.Models
         public int RatingID { get; set; }
 
         [Required(ErrorMessage = "User is required.")]
-        public int UserID { get; set; }
-        [ForeignKey(nameof(UserID))]
-        public virtual User User { get; set; } = default!;
+        public string UserId { get; set; } = string.Empty;
+
+        [ForeignKey("UserId")]
+        public virtual NZFarmersUser User { get; set; } = default!;
 
         [Required(ErrorMessage = "Farmer is required.")]
         public int FarmerID { get; set; }
-        [ForeignKey(nameof(FarmerID))]
+
+        [ForeignKey("FarmerID")]
         public virtual Farmers Farmer { get; set; } = default!;
 
         [Required(ErrorMessage = "Rating is required.")]

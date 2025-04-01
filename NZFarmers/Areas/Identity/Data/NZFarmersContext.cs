@@ -15,13 +15,10 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
     {
 
     }
-
+    public DbSet<NZFarmersUser> NZFarmersUser { get; set; }
     public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
 
-    public DbSet<User> Users { get; set; }
-
     public DbSet<Farmers> Farmers { get; set; }
-    public DbSet<Products> Products { get; set; }
     public DbSet<FarmerProduct> FarmerProducts { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderDetail> OrderDetails { get; set; }
@@ -40,6 +37,11 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
         // For example, you can rename the ASP.NET Identity table names and more.
         // Add your customizations after calling base.OnModelCreating(builder);
 
+        builder.Entity<ShoppingCartItem>()
+        .HasOne(sci => sci.FarmerProduct)
+        .WithMany(fp => fp.ShoppingCartItems)
+        .HasForeignKey(sci => sci.FarmerProductID)
+        .OnDelete(DeleteBehavior.Cascade);
 
 
         builder.Entity<PaymentDetail>()
@@ -56,18 +58,16 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
 
 
         builder.Entity<Rating>()
-        .HasOne(r => r.User)
-        .WithMany(u => u.Ratings)  
-        .HasForeignKey(r => r.UserID)
-        .OnDelete(DeleteBehavior.Restrict);
-
+     .HasOne(r => r.User)
+     .WithMany(u => u.Ratings)
+     .HasForeignKey(r => r.UserId) // Use UserId, not UserID
+     .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<Farmers>()
             .HasMany(f => f.FarmerProducts)
             .WithOne(p => p.Farmer)
             .HasForeignKey(p => p.FarmerID);
 
-        // Configuring Many-to-Many Relationships using Fluent API
         builder.Entity<FarmerMarketParticipation>()
             .HasKey(fmp => new { fmp.FarmerID, fmp.EventID });
 

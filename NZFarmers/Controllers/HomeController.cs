@@ -20,10 +20,9 @@ namespace NZFarmers.Controllers
         // GET: Home/Index
         public async Task<IActionResult> Index(string category, string search)
         {
-            // Get all products with related details
+            // Start with all FarmerProducts
             var productsQuery = _context.FarmerProducts
-                .Include(p => p.Product)
-                .Include(p => p.Farmer)
+                .Include(p => p.Farmer) // Keep if you still want to display Farmer info
                 .AsQueryable();
 
             // Filter by category if provided
@@ -38,11 +37,13 @@ namespace NZFarmers.Controllers
             // Filter by search text if provided
             if (!string.IsNullOrEmpty(search))
             {
-                productsQuery = productsQuery.Where(p => p.Product.ProductName.Contains(search)
-                    || p.Farmer.FarmName.Contains(search));
+                // Replace p.ProductName with whatever property holds the product's name in FarmerProduct
+                productsQuery = productsQuery.Where(p =>
+                    p.ProductName.Contains(search) ||
+                    p.Farmer.FarmName.Contains(search));
             }
 
-            // For the homepage, we might only want the latest 6 products
+            // Optionally show only the latest 6 products
             var products = await productsQuery
                 .OrderByDescending(p => p.FarmerProductID)
                 .Take(6)
@@ -51,11 +52,9 @@ namespace NZFarmers.Controllers
             return View(products);
         }
 
-        // Optional: Additional action to support "Learn More" button
+        // Optional: Additional action for "Learn More"
         public IActionResult LearnMore()
         {
-            // Create a view with more information about your marketplace,
-            // its mission, community, or how it works.
             return View();
         }
     }

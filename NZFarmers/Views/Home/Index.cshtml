@@ -88,15 +88,18 @@
         @foreach (var product in Model)
         {
             <div class="col-md-4 mb-4">
-                <div class="card">
+                <div class="card position-relative">
                     <span class="category-badge">@product.Category</span>
-                    <img src="@product.ImageURL" class="card-img-top" alt="@product.Product.ProductName">
+                    <img src="@product.ImageURL" class="card-img-top" alt="@product.ProductName" />
                     <div class="card-body">
-                        <h5 class="card-title">@product.Product.ProductName</h5>
+                        <h5 class="card-title">@product.ProductName</h5>
                         <p class="text-muted">By: @product.Farmer.FarmName</p>
                         <p class="text-success fs-5">@product.Price.ToString("C")</p>
-                        <p class="text-muted"><i class="fas fa-map-marker-alt"></i> @product.Farmer.City</p>
-                        <a asp-controller="FarmerProducts" asp-action="Details" asp-route-id="@product.FarmerProductID" class="btn btn-primary w-100">
+                        <p class="text-muted">
+                            <i class="fas fa-map-marker-alt"></i> @product.Farmer.City
+                        </p>
+                        <a asp-controller="FarmerProducts" asp-action="Details" asp-route-id="@product.FarmerProductID"
+                           class="btn btn-primary w-100">
                             View Product
                         </a>
                     </div>

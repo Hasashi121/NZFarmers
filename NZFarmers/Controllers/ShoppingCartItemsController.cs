@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http; // For IFormCollection if needed
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,9 +32,9 @@ namespace NZFarmers.Controllers
             if (string.IsNullOrEmpty(userId))
                 return Challenge();
 
+            // Removed the extra ThenInclude(fp => fp.Product)
             var cartItems = await _context.ShoppingCartItems
                 .Include(ci => ci.FarmerProduct)
-                    .ThenInclude(fp => fp.Product)
                 .Where(ci => ci.UserID == userId)
                 .ToListAsync();
 
@@ -106,10 +105,9 @@ namespace NZFarmers.Controllers
             if (string.IsNullOrEmpty(userId))
                 return Challenge();
 
-            // Retrieve all cart items for the user
+            // Retrieve all cart items for the user without then including the removed Product model
             var cartItems = await _context.ShoppingCartItems
                 .Include(ci => ci.FarmerProduct)
-                    .ThenInclude(fp => fp.Product)
                 .Where(ci => ci.UserID == userId)
                 .ToListAsync();
 
@@ -136,7 +134,8 @@ namespace NZFarmers.Controllers
                         UnitAmount = (long)(item.FarmerProduct.Price * 100), // Stripe expects amounts in cents
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
-                            Name = item.FarmerProduct.Product.ProductName
+                            // Use the product name directly from FarmerProduct
+                            Name = item.FarmerProduct.ProductName
                         }
                     },
                     Quantity = item.Quantity

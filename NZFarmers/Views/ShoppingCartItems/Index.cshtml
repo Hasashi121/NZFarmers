@@ -26,10 +26,19 @@ else
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@item.FarmerProduct?.Product?.ProductName</td>
+                    <!-- Display ProductName directly from FarmerProduct -->
+                    <td>@(item.FarmerProduct?.ProductName ?? "N/A")</td>
+
+                    <!-- Display Price -->
                     <td>@(item.FarmerProduct?.Price.ToString("C") ?? "N/A")</td>
+
+                    <!-- Quantity -->
                     <td>@item.Quantity</td>
+
+                    <!-- Subtotal Calculation -->
                     <td>@((item.FarmerProduct?.Price ?? 0) * item.Quantity).ToString("C")</td>
+
+                    <!-- Remove Button -->
                     <td>
                         <form asp-action="RemoveItem" method="post" style="display:inline;">
                             <input type="hidden" name="cartItemId" value="@item.ShoppingCartItemID" />
@@ -41,7 +50,7 @@ else
         </tbody>
     </table>
 
-    <!-- Add a button for Checkout that posts to the Checkout action -->
+    <!-- Checkout Button -->
     <form asp-action="Checkout" method="post">
         <button type="submit" class="btn btn-success">Checkout</button>
     </form>

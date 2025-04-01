@@ -21,13 +21,19 @@ namespace NZFarmers.Models
 
         [Required(ErrorMessage = "Farmer is required.")]
         public int FarmerID { get; set; }
+
         [ForeignKey(nameof(FarmerID))]
         public virtual Farmers Farmer { get; set; } = default!;
 
-        [Required(ErrorMessage = "Product is required.")]
-        public int ProductID { get; set; }
-        [ForeignKey(nameof(ProductID))]
-        public virtual Products Product { get; set; } = default!;
+        // Removed dependency on the Products model.
+        // Instead, include product-specific details directly:
+
+        [Required(ErrorMessage = "Product name is required.")]
+        [StringLength(100, ErrorMessage = "Product name must be between 2 and 100 characters.", MinimumLength = 2)]
+        public string ProductName { get; set; } = string.Empty;
+
+        [StringLength(500, ErrorMessage = "Product description cannot exceed 500 characters.")]
+        public string? Description { get; set; }
 
         [Required(ErrorMessage = "Category is required.")]
         public ProductCategory Category { get; set; } = ProductCategory.Other;
@@ -43,14 +49,13 @@ namespace NZFarmers.Models
         [Url(ErrorMessage = "Invalid URL for image.")]
         public string? ImageURL { get; set; }
 
-        // Add a property for file upload (not mapped to the database)
+        // Property for file upload (not mapped to the database)
         [NotMapped]
         public IFormFile? ImageFile { get; set; }
 
-        public virtual ICollection<ShoppingCartItem> ShoppingCartItems { get; set; }
-       = new List<ShoppingCartItem>();
+        public virtual ICollection<ShoppingCartItem> ShoppingCartItems { get; set; } = new List<ShoppingCartItem>();
 
-        // Navigation for OrderDetail
+        // Navigation property for OrderDetail
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
     }
 }
