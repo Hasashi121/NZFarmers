@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace NZFarmers.Controllers
         {
             // Start with all FarmerProducts
             var productsQuery = _context.FarmerProducts
-                .Include(p => p.Farmer) // Keep if you still want to display Farmer info
+                .Include(p => p.Farmer)
                 .AsQueryable();
 
             // Filter by category if provided
@@ -31,19 +32,21 @@ namespace NZFarmers.Controllers
                 if (Enum.TryParse<ProductCategory>(category, out var selectedCategory))
                 {
                     productsQuery = productsQuery.Where(p => p.Category == selectedCategory);
+                    ViewData["SelectedCategory"] = category;
                 }
             }
 
             // Filter by search text if provided
             if (!string.IsNullOrEmpty(search))
             {
-                // Replace p.ProductName with whatever property holds the product's name in FarmerProduct
                 productsQuery = productsQuery.Where(p =>
                     p.ProductName.Contains(search) ||
                     p.Farmer.FarmName.Contains(search));
+                ViewData["SearchQuery"] = search;
             }
 
-            // Optionally show only the latest 6 products
+            // Get featured products - you can customize the logic here
+            // Currently showing the latest products
             var products = await productsQuery
                 .OrderByDescending(p => p.FarmerProductID)
                 .Take(6)
@@ -52,10 +55,17 @@ namespace NZFarmers.Controllers
             return View(products);
         }
 
-        // Optional: Additional action for "Learn More"
+        // Action for "Learn More"
         public IActionResult LearnMore()
         {
             return View();
+        }
+
+        // Error handling
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
