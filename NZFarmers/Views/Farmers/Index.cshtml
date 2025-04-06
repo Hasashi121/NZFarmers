@@ -2,24 +2,33 @@
 
 @{
     ViewData["Title"] = "Farmers";
+    var nameSort = ViewData["NameSortParm"] as string;
+    var citySort = ViewData["CitySortParm"] as string;
+    var regionSort = ViewData["RegionSortParm"] as string;
 }
 
 <h1>Farmers</h1>
 
+<form asp-action="Index" method="get" class="form-inline mb-3">
+    <input type="text" name="searchString" class="form-control mr-2"
+           placeholder="Search by name, city, region..." value="@ViewData["CurrentFilter"]" />
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-success">Create New</a>
 </p>
 
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
-            <th>Farm Name</th>
+            <th><a asp-action="Index" asp-route-sortOrder="@nameSort">Farm Name</a></th>
             <th>Description</th>
             <th>Phone</th>
             <th>Profile Image</th>
             <th>Address</th>
-            <th>City</th>
-            <th>Region</th>
+            <th><a asp-action="Index" asp-route-sortOrder="@citySort">City</a></th>
+            <th><a asp-action="Index" asp-route-sortOrder="@regionSort">Region</a></th>
             <th>ZipCode</th>
             <th></th>
         </tr>
@@ -34,7 +43,7 @@
                 <td>
                     @if (!string.IsNullOrEmpty(farmer.ProfileImage))
                     {
-                        <img src="@farmer.ProfileImage" alt="Profile Image" style="max-width:100px; height:auto;" />
+                        <img src="@farmer.ProfileImage" alt="Profile Image" style="max-width:100px;" />
                     }
                     else
                     {

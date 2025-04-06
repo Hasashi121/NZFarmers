@@ -23,24 +23,34 @@ namespace NZFarmers.Controllers
         }
 
         // GET: FarmerProducts
-        public async Task<IActionResult> Index()
+        // GET: FarmerProducts
+        public async Task<IActionResult> Index(string searchString, string categoryFilter)
         {
-            try
-            {
-                var farmerProducts = await _context.FarmerProducts
-                    .Include(f => f.Farmer)
-                    .ToListAsync();
+            var query = _context.FarmerProducts
+                .Include(f => f.Farmer)
+                .AsQueryable();
 
-                // Ensure we return a valid list even if it's empty
-                return View(farmerProducts ?? new List<FarmerProduct>());
-            }
-            catch (Exception ex)
+            if (!string.IsNullOrEmpty(searchString))
             {
-                // Optional: log exception here using a logger
-                // Fallback to empty list to avoid view crash
-                return View(new List<FarmerProduct>());
+                query = query.Where(p =>
+                    p.ProductName.Contains(searchString) ||
+                    p.Farmer.FarmName.Contains(searchString) ||
+                    p.Farmer.City.Contains(searchString));
             }
+
+            if (!string.IsNullOrEmpty(categoryFilter) && Enum.TryParse<ProductCategory>(categoryFilter, out var parsedCategory))
+            {
+                query = query.Where(p => p.Category == parsedCategory);
+            }
+
+            ViewData["CurrentSearch"] = searchString;
+            ViewData["CurrentCategory"] = categoryFilter;
+            ViewData["CategoryList"] = new SelectList(Enum.GetValues(typeof(ProductCategory)));
+
+            var farmerProducts = await query.ToListAsync();
+            return View(farmerProducts);
         }
+
 
 
         // GET: FarmerProducts/Details/5

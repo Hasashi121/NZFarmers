@@ -92,6 +92,53 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
         }
     );
 
+        builder.Entity<FarmerProduct>().HasData(
+    new FarmerProduct
+    {
+        FarmerProductID = 1,
+        FarmerID = 2, // Sunny Fields
+        ProductName = "Organic Tomatoes",
+        Description = "Juicy and pesticide-free tomatoes.",
+        Category = ProductCategory.Vegetables,
+        Price = 3.50m,
+        Stock = 120,
+        ImageURL = "https://example.com/images/tomatoes.jpg"
+    },
+    new FarmerProduct
+    {
+        FarmerProductID = 2,
+        FarmerID = 2,
+        ProductName = "Sweet Corn",
+        Description = "Golden corn, perfect for BBQs.",
+        Category = ProductCategory.Vegetables,
+        Price = 2.20m,
+        Stock = 200,
+        ImageURL = "https://example.com/images/corn.jpg"
+    },
+    new FarmerProduct
+    {
+        FarmerProductID = 3,
+        FarmerID = 3, // Green Valley Farms
+        ProductName = "Raw Clover Honey",
+        Description = "Locally harvested honey from native bush.",
+        Category = ProductCategory.Other,
+        Price = 8.99m,
+        Stock = 60,
+        ImageURL = "https://example.com/images/honey.jpg"
+    },
+    new FarmerProduct
+    {
+        FarmerProductID = 4,
+        FarmerID = 3,
+        ProductName = "Free Range Eggs",
+        Description = "Dozen of fresh free-range eggs.",
+        Category = ProductCategory.Dairy,
+        Price = 5.00m,
+        Stock = 75,
+        ImageURL = "https://example.com/images/eggs.jpg"
+    }
+);
+
         builder.Entity<ShoppingCartItem>()
         .HasOne(sci => sci.FarmerProduct)
         .WithMany(fp => fp.ShoppingCartItems)

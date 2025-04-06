@@ -29,13 +29,38 @@ namespace NZFarmers.Controllers
         }
 
         // GET: Farmers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, string sortOrder)
         {
-            var farmersList = await _context.Farmers
-                .Include(f => f.User)
-                .ToListAsync();
-            return View(farmersList);
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["CitySortParm"] = sortOrder == "City" ? "city_desc" : "City";
+            ViewData["RegionSortParm"] = sortOrder == "Region" ? "region_desc" : "Region";
+
+            var farmers = from f in _context.Farmers.Include(f => f.User)
+                          select f;
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                farmers = farmers.Where(f =>
+                    f.FarmName.Contains(searchString) ||
+                    f.City.Contains(searchString) ||
+                    f.Region.Contains(searchString) ||
+                    f.Address.Contains(searchString));
+            }
+
+            farmers = sortOrder switch
+            {
+                "name_desc" => farmers.OrderByDescending(f => f.FarmName),
+                "City" => farmers.OrderBy(f => f.City),
+                "city_desc" => farmers.OrderByDescending(f => f.City),
+                "Region" => farmers.OrderBy(f => f.Region),
+                "region_desc" => farmers.OrderByDescending(f => f.Region),
+                _ => farmers.OrderBy(f => f.FarmName),
+            };
+
+            return View(await farmers.ToListAsync());
         }
+
 
         // GET: Farmers/Details/5
         public async Task<IActionResult> Details(int? id)

@@ -6,11 +6,23 @@
 
 <h1>Farmer Products</h1>
 
-<p>
-    <a asp-controller="FarmerProducts" asp-action="Create">Create New</a>
-
-
-</p>
+<form asp-action="Index" method="get" class="row g-2 mb-4">
+    <div class="col-md-4">
+        <input type="text" name="searchString" class="form-control" placeholder="Search by name or location"
+               value="@ViewData["CurrentSearch"]" />
+    </div>
+    <div class="col-md-3">
+        <select name="categoryFilter" class="form-select" asp-items="@(ViewData["CategoryList"] as SelectList)">
+            <option value="">All Categories</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-success w-100">Search</button>
+    </div>
+    <div class="col-md-3 text-end">
+        <a asp-action="Create" class="btn btn-primary w-100">Create New</a>
+    </div>
+</form>
 
 <table class="table">
     <thead>
