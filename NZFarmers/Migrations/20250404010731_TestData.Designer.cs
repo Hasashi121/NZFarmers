@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NZFarmers.Data;
 
@@ -11,9 +12,11 @@ using NZFarmers.Data;
 namespace NZFarmers.Migrations
 {
     [DbContext(typeof(NZFarmersContext))]
-    partial class NZFarmersContextModelSnapshot : ModelSnapshot
+    [Migration("20250404010731_TestData")]
+    partial class TestData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
