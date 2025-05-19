@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +12,7 @@ using NZFarmers.Models;
 
 namespace NZFarmers.Controllers
 {
+    [Authorize(Roles = "Farmer,Admin")]
     public class FarmerProductsController : Controller
     {
         private readonly NZFarmersContext _context;
@@ -22,7 +24,6 @@ namespace NZFarmers.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        // GET: FarmerProducts
         // GET: FarmerProducts
         public async Task<IActionResult> Index(string searchString, string categoryFilter)
         {
@@ -118,7 +119,7 @@ namespace NZFarmers.Controllers
             return View(farmerProduct);
         }
 
-        // GET: FarmerProducts/Edit/5
+        // GET: FarmerProducts/Edit/
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -133,7 +134,7 @@ namespace NZFarmers.Controllers
             return View(farmerProduct);
         }
 
-        // POST: FarmerProducts/Edit/5
+        // POST: FarmerProducts/Edit/
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("FarmerProductID,FarmerID,Category,Price,Stock,ImageURL")] FarmerProduct farmerProduct)
