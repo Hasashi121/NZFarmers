@@ -87,7 +87,7 @@ namespace NZFarmers.Controllers
         public async Task<IActionResult> Create(FarmerProduct farmerProduct)
         {
             // Typical pattern: if valid, save; otherwise re-show form
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 // Handle file upload if present
                 if (farmerProduct.ImageFile != null)
@@ -141,7 +141,7 @@ namespace NZFarmers.Controllers
             if (id != farmerProduct.FarmerProductID)
                 return NotFound();
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 try
                 {
