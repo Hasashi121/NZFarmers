@@ -12,7 +12,7 @@ using NZFarmers.Models;
 
 namespace NZFarmers.Controllers
 {
-    [Authorize(Roles = "Farmer,Admin")]
+    
     public class FarmerProductsController : Controller
     {
         private readonly NZFarmersContext _context;

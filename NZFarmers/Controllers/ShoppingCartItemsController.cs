@@ -145,9 +145,28 @@ namespace NZFarmers.Controllers
             var sessionService = new SessionService();
             Session stripeSession = sessionService.Create(sessionOptions);
 
-            // Note: You can set up Stripe webhooks to create the Order record after payment is confirmed.
-            // For this example, we simply redirect to Stripe's checkout page.
+       
             return Redirect(stripeSession.Url);
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -34,8 +34,13 @@
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Input.ContactNumber" class="form-label">Contact Number</label>
-                            <input asp-for="Input.ContactNumber" class="form-control" placeholder="+64 234 567 8901" />
+                            <label asp-for="Input.ContactNumber"></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="nz-prefix">+64</span>
+                                </div>
+                                <input asp-for="Input.ContactNumber" class="form-control" aria-describedby="nz-prefix" placeholder="Enter phone number without leading 0" />
+                            </div>
                             <span asp-validation-for="Input.ContactNumber" class="text-danger"></span>
                         </div>
 

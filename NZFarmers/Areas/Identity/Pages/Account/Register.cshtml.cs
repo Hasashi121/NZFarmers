@@ -98,6 +98,7 @@ namespace NZFarmers.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -142,6 +143,13 @@ namespace NZFarmers.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
+
+                        // NEW: Farmer registration redirect
+                        if (user.Role == RoleType.Farmer)
+                        {
+                            return RedirectToAction("Create", "Farmers", new { area = "" });
+                        }
+
                         return LocalRedirect(returnUrl);
                     }
                 }

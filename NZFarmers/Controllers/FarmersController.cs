@@ -12,7 +12,6 @@ using NZFarmers.Models;
 
 namespace NZFarmers.Controllers
 {
-    [Authorize(Roles ="Admin")] // Ensure only logged-in users can access
     public class FarmersController : Controller
     {
         private readonly NZFarmersContext _context;
