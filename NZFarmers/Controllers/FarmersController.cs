@@ -28,8 +28,9 @@ namespace NZFarmers.Controllers
         }
 
         // GET: Farmers
-        public async Task<IActionResult> Index(string searchString, string sortOrder)
+        public async Task<IActionResult> Index(string searchString, string sortOrder, int page = 1)
         {
+            int pageSize = 10; // Show 10 farmers per page (you can change this)
             ViewData["CurrentFilter"] = searchString;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["CitySortParm"] = sortOrder == "City" ? "city_desc" : "City";
@@ -57,7 +58,8 @@ namespace NZFarmers.Controllers
                 _ => farmers.OrderBy(f => f.FarmName),
             };
 
-            return View(await farmers.ToListAsync());
+            var paginatedFarmers = await PaginatedList<Farmers>.CreateAsync(farmers.AsNoTracking(), page, pageSize);
+            return View(paginatedFarmers);
         }
 
 
