@@ -77,7 +77,7 @@ namespace NZFarmers.Controllers
             paymentDetail.UserID = userId;
             paymentDetail.CreatedAt = DateTime.UtcNow;
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _context.Add(paymentDetail);
                 await _context.SaveChangesAsync();
@@ -128,7 +128,7 @@ namespace NZFarmers.Controllers
             }
             paymentDetail.UserID = userId;
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 try
                 {

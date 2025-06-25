@@ -59,7 +59,7 @@ namespace NZFarmers.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TrackingID,OrderID,Status,LastUpdated")] DeliveryTracking deliveryTracking)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _context.Add(deliveryTracking);
                 await _context.SaveChangesAsync();
@@ -98,7 +98,7 @@ namespace NZFarmers.Controllers
                 return NotFound();
             }
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 try
                 {
