@@ -139,7 +139,94 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
         Stock = 75,
         ImageURL = "https://example.com/images/eggs.jpg"
     }
+
 );
+        // Add this to your OnModelCreating method in NZFarmersContext.cs
+        // Place this after your existing seed data for FarmerProduct
+
+        // Educational Content Seed Data
+        builder.Entity<EducationalContent>().HasData(
+            new EducationalContent
+            {
+                ContentID = 10,
+                Title = "Sustainable Farming Practices for New Zealand",
+                Description = "Learn about eco-friendly farming methods that work best in New Zealand's unique climate and soil conditions. Discover how to reduce environmental impact while maintaining productivity.",
+                ContentURL = "https://www.mpi.govt.nz/agriculture/sustainable-farming/",
+                CreatedAt = DateTime.UtcNow.AddDays(-30)
+            },
+            new EducationalContent
+            {
+                ContentID = 20,
+                Title = "Organic Certification Guide",
+                Description = "Step-by-step guide to obtaining organic certification for your farm products. Understand the requirements, documentation needed, and benefits of organic farming.",
+                ContentURL = "https://www.asurequality.com/our-services/organic-certification/",
+                CreatedAt = DateTime.UtcNow.AddDays(-25)
+            },
+            new EducationalContent
+            {
+                ContentID = 30,
+                Title = "Soil Health and Nutrition Management",
+                Description = "Essential tips for maintaining healthy soil and optimizing nutrient levels. Learn about composting, crop rotation, and natural fertilizers.",
+                ContentURL = "https://www.landcareresearch.co.nz/discover-our-research/environment/soils/",
+                CreatedAt = DateTime.UtcNow.AddDays(-20)
+            },
+            new EducationalContent
+            {
+                ContentID = 40,
+                Title = "Water Conservation in Agriculture",
+                Description = "Effective strategies for water management and conservation on your farm. Discover irrigation techniques that save water while maximizing crop yield.",
+                ContentURL = "https://www.niwa.co.nz/agriculture/irrigation",
+                CreatedAt = DateTime.UtcNow.AddDays(-18)
+            },
+            new EducationalContent
+            {
+                ContentID = 50,
+                Title = "Pest and Disease Management",
+                Description = "Integrated pest management strategies that protect your crops naturally. Learn to identify common pests and diseases affecting New Zealand farms.",
+                ContentURL = "https://www.plantandfood.co.nz/page/agriculture/pest-management/",
+                CreatedAt = DateTime.UtcNow.AddDays(-15)
+            },
+            new EducationalContent
+            {
+                ContentID = 60,
+                Title = "Climate Change Adaptation for Farmers",
+                Description = "Prepare your farm for changing weather patterns and extreme events. Strategies for building resilience and adapting to climate variability.",
+                ContentURL = "https://www.mpi.govt.nz/agriculture/climate-change/",
+                CreatedAt = DateTime.UtcNow.AddDays(-12)
+            },
+            new EducationalContent
+            {
+                ContentID = 70,
+                Title = "Direct Marketing and Farm-to-Table Sales",
+                Description = "Learn how to sell directly to consumers and restaurants. Build relationships with local buyers and maximize your profit margins through direct sales.",
+                ContentURL = "https://www.marketgardening.co.nz/direct-marketing/",
+                CreatedAt = DateTime.UtcNow.AddDays(-10)
+            },
+            new EducationalContent
+            {
+                ContentID = 80,
+                Title = "Seasonal Planting Calendar for NZ",
+                Description = "Month-by-month guide to planting vegetables and fruits in New Zealand. Optimize your growing seasons and plan for year-round production.",
+                ContentURL = "https://www.gardening.co.nz/vegetables/planting-calendar/",
+                CreatedAt = DateTime.UtcNow.AddDays(-8)
+            },
+            new EducationalContent
+            {
+                ContentID = 90,
+                Title = "Farm Safety and Risk Management",
+                Description = "Essential safety practices and risk management strategies for farm operations. Protect yourself, your workers, and your property.",
+                ContentURL = "https://www.worksafe.govt.nz/topic-and-industry/agriculture/",
+                CreatedAt = DateTime.UtcNow.AddDays(-5)
+            },
+            new EducationalContent
+            {
+                ContentID = 100,
+                Title = "Technology in Modern Farming",
+                Description = "Explore how technology can improve farm efficiency and productivity. From GPS tractors to soil sensors, discover the latest agricultural innovations.",
+                ContentURL = "https://www.agritech.org.nz/resources/",
+                CreatedAt = DateTime.UtcNow.AddDays(-3)
+            }
+        );
 
         builder.Entity<ShoppingCartItem>()
         .HasOne(sci => sci.FarmerProduct)

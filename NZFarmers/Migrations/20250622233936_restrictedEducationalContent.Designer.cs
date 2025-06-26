@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NZFarmers.Data;
 
@@ -11,9 +12,11 @@ using NZFarmers.Data;
 namespace NZFarmers.Migrations
 {
     [DbContext(typeof(NZFarmersContext))]
-    partial class NZFarmersContextModelSnapshot : ModelSnapshot
+    [Migration("20250622233936_restrictedEducationalContent")]
+    partial class restrictedEducationalContent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,9 +251,9 @@ namespace NZFarmers.Migrations
                         {
                             Id = "seed-user-1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "dfb9565a-3cf3-4c3d-973f-7ffd413ae0d1",
+                            ConcurrencyStamp = "5542f7be-05e9-40de-aa95-d6b2bae6f2e0",
                             ContactNumber = "",
-                            CreatedAt = new DateTime(2025, 6, 26, 2, 39, 8, 141, DateTimeKind.Utc).AddTicks(1681),
+                            CreatedAt = new DateTime(2025, 6, 22, 23, 39, 34, 50, DateTimeKind.Utc).AddTicks(1437),
                             Email = "sarah@example.com",
                             EmailConfirmed = true,
                             FirstName = "",
@@ -261,7 +264,7 @@ namespace NZFarmers.Migrations
                             PasswordHash = "PLACEHOLDER_HASH",
                             PhoneNumberConfirmed = false,
                             Role = 2,
-                            SecurityStamp = "d0628762-da3a-4131-aabf-d3f2f92f0b63",
+                            SecurityStamp = "923e6274-80c0-4619-8471-6a75c3a83317",
                             TwoFactorEnabled = false,
                             UserName = "sarah@example.com"
                         },
@@ -269,9 +272,9 @@ namespace NZFarmers.Migrations
                         {
                             Id = "seed-user-2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3d11a3c1-2a03-4c95-a8ac-90779894eb5f",
+                            ConcurrencyStamp = "37a73a5f-1e79-4ff7-bd2e-3c09eccf765f",
                             ContactNumber = "",
-                            CreatedAt = new DateTime(2025, 6, 26, 2, 39, 8, 141, DateTimeKind.Utc).AddTicks(1858),
+                            CreatedAt = new DateTime(2025, 6, 22, 23, 39, 34, 50, DateTimeKind.Utc).AddTicks(1610),
                             Email = "tom@example.com",
                             EmailConfirmed = true,
                             FirstName = "",
@@ -282,7 +285,7 @@ namespace NZFarmers.Migrations
                             PasswordHash = "PLACEHOLDER_HASH",
                             PhoneNumberConfirmed = false,
                             Role = 2,
-                            SecurityStamp = "467ea77f-253a-47b3-a6c2-bbd877fc6a4a",
+                            SecurityStamp = "2f7b80fd-7698-4a95-8fca-e7655072ab27",
                             TwoFactorEnabled = false,
                             UserName = "tom@example.com"
                         });
@@ -340,88 +343,6 @@ namespace NZFarmers.Migrations
                     b.HasKey("ContentID");
 
                     b.ToTable("EducationalContents");
-
-                    b.HasData(
-                        new
-                        {
-                            ContentID = 10,
-                            ContentURL = "https://www.mpi.govt.nz/agriculture/sustainable-farming/",
-                            CreatedAt = new DateTime(2025, 5, 27, 2, 39, 8, 141, DateTimeKind.Utc).AddTicks(2407),
-                            Description = "Learn about eco-friendly farming methods that work best in New Zealand's unique climate and soil conditions. Discover how to reduce environmental impact while maintaining productivity.",
-                            Title = "Sustainable Farming Practices for New Zealand"
-                        },
-                        new
-                        {
-                            ContentID = 20,
-                            ContentURL = "https://www.asurequality.com/our-services/organic-certification/",
-                            CreatedAt = new DateTime(2025, 6, 1, 2, 39, 8, 141, DateTimeKind.Utc).AddTicks(2419),
-                            Description = "Step-by-step guide to obtaining organic certification for your farm products. Understand the requirements, documentation needed, and benefits of organic farming.",
-                            Title = "Organic Certification Guide"
-                        },
-                        new
-                        {
-                            ContentID = 30,
-                            ContentURL = "https://www.landcareresearch.co.nz/discover-our-research/environment/soils/",
-                            CreatedAt = new DateTime(2025, 6, 6, 2, 39, 8, 141, DateTimeKind.Utc).AddTicks(2423),
-                            Description = "Essential tips for maintaining healthy soil and optimizing nutrient levels. Learn about composting, crop rotation, and natural fertilizers.",
-                            Title = "Soil Health and Nutrition Management"
-                        },
-                        new
-                        {
-                            ContentID = 40,
-                            ContentURL = "https://www.niwa.co.nz/agriculture/irrigation",
-                            CreatedAt = new DateTime(2025, 6, 8, 2, 39, 8, 141, DateTimeKind.Utc).AddTicks(2427),
-                            Description = "Effective strategies for water management and conservation on your farm. Discover irrigation techniques that save water while maximizing crop yield.",
-                            Title = "Water Conservation in Agriculture"
-                        },
-                        new
-                        {
-                            ContentID = 50,
-                            ContentURL = "https://www.plantandfood.co.nz/page/agriculture/pest-management/",
-                            CreatedAt = new DateTime(2025, 6, 11, 2, 39, 8, 141, DateTimeKind.Utc).AddTicks(2431),
-                            Description = "Integrated pest management strategies that protect your crops naturally. Learn to identify common pests and diseases affecting New Zealand farms.",
-                            Title = "Pest and Disease Management"
-                        },
-                        new
-                        {
-                            ContentID = 60,
-                            ContentURL = "https://www.mpi.govt.nz/agriculture/climate-change/",
-                            CreatedAt = new DateTime(2025, 6, 14, 2, 39, 8, 141, DateTimeKind.Utc).AddTicks(2435),
-                            Description = "Prepare your farm for changing weather patterns and extreme events. Strategies for building resilience and adapting to climate variability.",
-                            Title = "Climate Change Adaptation for Farmers"
-                        },
-                        new
-                        {
-                            ContentID = 70,
-                            ContentURL = "https://www.marketgardening.co.nz/direct-marketing/",
-                            CreatedAt = new DateTime(2025, 6, 16, 2, 39, 8, 141, DateTimeKind.Utc).AddTicks(2439),
-                            Description = "Learn how to sell directly to consumers and restaurants. Build relationships with local buyers and maximize your profit margins through direct sales.",
-                            Title = "Direct Marketing and Farm-to-Table Sales"
-                        },
-                        new
-                        {
-                            ContentID = 80,
-                            ContentURL = "https://www.gardening.co.nz/vegetables/planting-calendar/",
-                            CreatedAt = new DateTime(2025, 6, 18, 2, 39, 8, 141, DateTimeKind.Utc).AddTicks(2444),
-                            Description = "Month-by-month guide to planting vegetables and fruits in New Zealand. Optimize your growing seasons and plan for year-round production.",
-                            Title = "Seasonal Planting Calendar for NZ"
-                        },
-                        new
-                        {
-                            ContentID = 90,
-                            ContentURL = "https://www.worksafe.govt.nz/topic-and-industry/agriculture/",
-                            CreatedAt = new DateTime(2025, 6, 21, 2, 39, 8, 141, DateTimeKind.Utc).AddTicks(2448),
-                            Description = "Essential safety practices and risk management strategies for farm operations. Protect yourself, your workers, and your property.",
-                            Title = "Farm Safety and Risk Management"
-                        },
-                        new
-                        {
-                            ContentID = 100,
-                            ContentURL = "https://www.agritech.org.nz/resources/",
-                            CreatedAt = new DateTime(2025, 6, 23, 2, 39, 8, 141, DateTimeKind.Utc).AddTicks(2452),
-                            Description = "Explore how technology can improve farm efficiency and productivity. From GPS tractors to soil sensors, discover the latest agricultural innovations.",
-                            Title = "Technology in Modern Farming"
-                        });
                 });
 
             modelBuilder.Entity("NZFarmers.Models.FarmerMarketEvent", b =>
