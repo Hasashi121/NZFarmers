@@ -62,7 +62,7 @@ namespace NZFarmers.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TotalPrice,Status")] Order order)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 // Get current user ID
                 var userId = _userManager.GetUserId(User);
@@ -104,7 +104,7 @@ namespace NZFarmers.Controllers
         {
             if (id != order.OrderID) return NotFound();
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 try
                 {

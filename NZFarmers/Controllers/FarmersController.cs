@@ -107,7 +107,7 @@ namespace NZFarmers.Controllers
             }
             farmer.UserID = currentUser.Id;
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 // Handle file upload
                 if (farmer.ProfileImageFile != null && farmer.ProfileImageFile.Length > 0)
@@ -162,7 +162,7 @@ namespace NZFarmers.Controllers
             // Keep the same user ID
             farmer.UserID = user.Id;
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 // If a new file was uploaded, overwrite the old image
                 if (farmer.ProfileImageFile != null && farmer.ProfileImageFile.Length > 0)
