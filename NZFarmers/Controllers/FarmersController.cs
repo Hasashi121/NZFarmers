@@ -234,5 +234,21 @@ namespace NZFarmers.Controllers
         {
             return _context.Farmers.Any(e => e.FarmerID == id);
         }
+
+        // GET: Farmers/DetailsWithProducts/5
+        public async Task<IActionResult> DetailsWithProducts(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var farmer = await _context.Farmers
+                .Include(f => f.User)
+                .Include(f => f.FarmerProducts)
+                .FirstOrDefaultAsync(f => f.FarmerID == id);
+
+            if (farmer == null) return NotFound();
+
+            return View("DetailsWithProducts", farmer);
+        }
+
     }
 }

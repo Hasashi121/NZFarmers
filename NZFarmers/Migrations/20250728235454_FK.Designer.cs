@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NZFarmers.Data;
 
@@ -11,9 +12,11 @@ using NZFarmers.Data;
 namespace NZFarmers.Migrations
 {
     [DbContext(typeof(NZFarmersContext))]
-    partial class NZFarmersContextModelSnapshot : ModelSnapshot
+    [Migration("20250728235454_FK")]
+    partial class FK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,9 +251,9 @@ namespace NZFarmers.Migrations
                         {
                             Id = "seed-user-1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2b30c800-15d5-4c6a-bffd-b9b0d829894f",
+                            ConcurrencyStamp = "048dc205-5af3-46ac-ad5e-d0e75d91d06b",
                             ContactNumber = "",
-                            CreatedAt = new DateTime(2025, 7, 28, 23, 56, 2, 369, DateTimeKind.Utc).AddTicks(5327),
+                            CreatedAt = new DateTime(2025, 7, 28, 23, 54, 52, 248, DateTimeKind.Utc).AddTicks(5832),
                             Email = "sarah@example.com",
                             EmailConfirmed = true,
                             FirstName = "",
@@ -261,7 +264,7 @@ namespace NZFarmers.Migrations
                             PasswordHash = "PLACEHOLDER_HASH",
                             PhoneNumberConfirmed = false,
                             Role = 2,
-                            SecurityStamp = "87cea874-4741-4891-bc7f-ede4a9e57b97",
+                            SecurityStamp = "7126e95c-a481-45b5-9eef-a0df012c0b2c",
                             TwoFactorEnabled = false,
                             UserName = "sarah@example.com"
                         },
@@ -269,9 +272,9 @@ namespace NZFarmers.Migrations
                         {
                             Id = "seed-user-2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c70052e5-f7e4-41cc-97c5-b5d4c3cc4faf",
+                            ConcurrencyStamp = "bffd0a89-f7d2-433a-81c5-1e4c81afd7c6",
                             ContactNumber = "",
-                            CreatedAt = new DateTime(2025, 7, 28, 23, 56, 2, 369, DateTimeKind.Utc).AddTicks(5511),
+                            CreatedAt = new DateTime(2025, 7, 28, 23, 54, 52, 248, DateTimeKind.Utc).AddTicks(6069),
                             Email = "tom@example.com",
                             EmailConfirmed = true,
                             FirstName = "",
@@ -282,7 +285,7 @@ namespace NZFarmers.Migrations
                             PasswordHash = "PLACEHOLDER_HASH",
                             PhoneNumberConfirmed = false,
                             Role = 2,
-                            SecurityStamp = "8528f667-c9b9-4f17-8e9c-636e981ded61",
+                            SecurityStamp = "1e82d0dc-fb20-457a-b828-6213bec6bf25",
                             TwoFactorEnabled = false,
                             UserName = "tom@example.com"
                         });
@@ -346,7 +349,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 10,
                             ContentURL = "https://www.mpi.govt.nz/agriculture/sustainable-farming/",
-                            CreatedAt = new DateTime(2025, 6, 28, 23, 56, 2, 369, DateTimeKind.Utc).AddTicks(6033),
+                            CreatedAt = new DateTime(2025, 6, 28, 23, 54, 52, 248, DateTimeKind.Utc).AddTicks(6549),
                             Description = "Learn about eco-friendly farming methods that work best in New Zealand's unique climate and soil conditions. Discover how to reduce environmental impact while maintaining productivity.",
                             Title = "Sustainable Farming Practices for New Zealand"
                         },
@@ -354,7 +357,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 20,
                             ContentURL = "https://www.asurequality.com/our-services/organic-certification/",
-                            CreatedAt = new DateTime(2025, 7, 3, 23, 56, 2, 369, DateTimeKind.Utc).AddTicks(6046),
+                            CreatedAt = new DateTime(2025, 7, 3, 23, 54, 52, 248, DateTimeKind.Utc).AddTicks(6560),
                             Description = "Step-by-step guide to obtaining organic certification for your farm products. Understand the requirements, documentation needed, and benefits of organic farming.",
                             Title = "Organic Certification Guide"
                         },
@@ -362,7 +365,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 30,
                             ContentURL = "https://www.landcareresearch.co.nz/discover-our-research/environment/soils/",
-                            CreatedAt = new DateTime(2025, 7, 8, 23, 56, 2, 369, DateTimeKind.Utc).AddTicks(6050),
+                            CreatedAt = new DateTime(2025, 7, 8, 23, 54, 52, 248, DateTimeKind.Utc).AddTicks(6565),
                             Description = "Essential tips for maintaining healthy soil and optimizing nutrient levels. Learn about composting, crop rotation, and natural fertilizers.",
                             Title = "Soil Health and Nutrition Management"
                         },
@@ -370,7 +373,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 40,
                             ContentURL = "https://www.niwa.co.nz/agriculture/irrigation",
-                            CreatedAt = new DateTime(2025, 7, 10, 23, 56, 2, 369, DateTimeKind.Utc).AddTicks(6055),
+                            CreatedAt = new DateTime(2025, 7, 10, 23, 54, 52, 248, DateTimeKind.Utc).AddTicks(6570),
                             Description = "Effective strategies for water management and conservation on your farm. Discover irrigation techniques that save water while maximizing crop yield.",
                             Title = "Water Conservation in Agriculture"
                         },
@@ -378,7 +381,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 50,
                             ContentURL = "https://www.plantandfood.co.nz/page/agriculture/pest-management/",
-                            CreatedAt = new DateTime(2025, 7, 13, 23, 56, 2, 369, DateTimeKind.Utc).AddTicks(6059),
+                            CreatedAt = new DateTime(2025, 7, 13, 23, 54, 52, 248, DateTimeKind.Utc).AddTicks(6574),
                             Description = "Integrated pest management strategies that protect your crops naturally. Learn to identify common pests and diseases affecting New Zealand farms.",
                             Title = "Pest and Disease Management"
                         },
@@ -386,7 +389,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 60,
                             ContentURL = "https://www.mpi.govt.nz/agriculture/climate-change/",
-                            CreatedAt = new DateTime(2025, 7, 16, 23, 56, 2, 369, DateTimeKind.Utc).AddTicks(6064),
+                            CreatedAt = new DateTime(2025, 7, 16, 23, 54, 52, 248, DateTimeKind.Utc).AddTicks(6578),
                             Description = "Prepare your farm for changing weather patterns and extreme events. Strategies for building resilience and adapting to climate variability.",
                             Title = "Climate Change Adaptation for Farmers"
                         },
@@ -394,7 +397,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 70,
                             ContentURL = "https://www.marketgardening.co.nz/direct-marketing/",
-                            CreatedAt = new DateTime(2025, 7, 18, 23, 56, 2, 369, DateTimeKind.Utc).AddTicks(6068),
+                            CreatedAt = new DateTime(2025, 7, 18, 23, 54, 52, 248, DateTimeKind.Utc).AddTicks(6583),
                             Description = "Learn how to sell directly to consumers and restaurants. Build relationships with local buyers and maximize your profit margins through direct sales.",
                             Title = "Direct Marketing and Farm-to-Table Sales"
                         },
@@ -402,7 +405,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 80,
                             ContentURL = "https://www.gardening.co.nz/vegetables/planting-calendar/",
-                            CreatedAt = new DateTime(2025, 7, 20, 23, 56, 2, 369, DateTimeKind.Utc).AddTicks(6072),
+                            CreatedAt = new DateTime(2025, 7, 20, 23, 54, 52, 248, DateTimeKind.Utc).AddTicks(6587),
                             Description = "Month-by-month guide to planting vegetables and fruits in New Zealand. Optimize your growing seasons and plan for year-round production.",
                             Title = "Seasonal Planting Calendar for NZ"
                         },
@@ -410,7 +413,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 90,
                             ContentURL = "https://www.worksafe.govt.nz/topic-and-industry/agriculture/",
-                            CreatedAt = new DateTime(2025, 7, 23, 23, 56, 2, 369, DateTimeKind.Utc).AddTicks(6077),
+                            CreatedAt = new DateTime(2025, 7, 23, 23, 54, 52, 248, DateTimeKind.Utc).AddTicks(6591),
                             Description = "Essential safety practices and risk management strategies for farm operations. Protect yourself, your workers, and your property.",
                             Title = "Farm Safety and Risk Management"
                         },
@@ -418,7 +421,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 100,
                             ContentURL = "https://www.agritech.org.nz/resources/",
-                            CreatedAt = new DateTime(2025, 7, 25, 23, 56, 2, 369, DateTimeKind.Utc).AddTicks(6081),
+                            CreatedAt = new DateTime(2025, 7, 25, 23, 54, 52, 248, DateTimeKind.Utc).AddTicks(6595),
                             Description = "Explore how technology can improve farm efficiency and productivity. From GPS tractors to soil sensors, discover the latest agricultural innovations.",
                             Title = "Technology in Modern Farming"
                         });
@@ -531,6 +534,9 @@ namespace NZFarmers.Migrations
                     b.Property<int>("FarmerID")
                         .HasColumnType("int");
 
+                    b.Property<int?>("FarmerProductID1")
+                        .HasColumnType("int");
+
                     b.Property<string>("ImageURL")
                         .HasColumnType("nvarchar(max)");
 
@@ -548,6 +554,8 @@ namespace NZFarmers.Migrations
                     b.HasKey("FarmerProductID");
 
                     b.HasIndex("FarmerID");
+
+                    b.HasIndex("FarmerProductID1");
 
                     b.ToTable("FarmerProducts");
 
@@ -930,6 +938,10 @@ namespace NZFarmers.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("NZFarmers.Models.FarmerProduct", null)
+                        .WithMany("FarmerProducts")
+                        .HasForeignKey("FarmerProductID1");
+
                     b.Navigation("Farmer");
                 });
 
@@ -1048,6 +1060,8 @@ namespace NZFarmers.Migrations
 
             modelBuilder.Entity("NZFarmers.Models.FarmerProduct", b =>
                 {
+                    b.Navigation("FarmerProducts");
+
                     b.Navigation("OrderDetails");
 
                     b.Navigation("ShoppingCartItems");

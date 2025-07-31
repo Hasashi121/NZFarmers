@@ -1,6 +1,4 @@
 ﻿@model NZFarmers.PaginatedList<NZFarmers.Models.Farmers>
-
-
 @{
     ViewData["Title"] = "Farmers";
     var nameSort = ViewData["NameSortParm"] as string;
@@ -8,81 +6,549 @@
     var regionSort = ViewData["RegionSortParm"] as string;
 }
 
-<h1>Farmers</h1>
+<style>
+    .farmers-header {
+        background: linear-gradient(rgba(30, 138, 62, 0.4), rgba(30, 138, 62, 0.4)), url('/uploads/YouTube Banner - Farmers Of New Zealand.png');
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        color: white;
+        padding: 6rem 0 4rem 0;
+        margin: 0;
+        text-align: center;
+        border-radius: 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+    }
 
-<form asp-action="Index" method="get" class="form-inline mb-3">
-    <input type="text" name="searchString" class="form-control mr-2"
-           placeholder="Search by name, city, region..." value="@ViewData["CurrentFilter"]" />
-    <button type="submit" class="btn btn-primary">Search</button>
-</form>
+        .farmers-header h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+            letter-spacing: -1px;
+        }
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Create New</a>
-</p>
+    .header-subtitle {
+        font-size: 1.4rem;
+        opacity: 0.95;
+        margin-top: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        font-weight: 300;
+        margin-bottom: 2.5rem;
+    }
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th><a asp-action="Index" asp-route-sortOrder="@nameSort">Farm Name</a></th>
-            <th>Description</th>
-            <th>Phone</th>
-            <th>Profile Image</th>
-            <th>Address</th>
-            <th><a asp-action="Index" asp-route-sortOrder="@citySort">City</a></th>
-            <th><a asp-action="Index" asp-route-sortOrder="@regionSort">Region</a></th>
-            <th>ZipCode</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+    .search-section {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        margin-bottom: 30px;
+        margin-top: 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .search-form {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .search-input {
+        flex: 1;
+        min-width: 300px;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e1e5e9;
+        border-radius: 25px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #1e8a3e;
+            box-shadow: 0 0 0 3px rgba(30, 138, 62, 0.1);
+        }
+
+    .btn-search {
+        background: linear-gradient(135deg, #1e8a3e 0%, #25a244 100%);
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 25px;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(30, 138, 62, 0.3);
+    }
+
+        .btn-search:hover {
+            background: linear-gradient(135deg, #176e31, #1e7a33);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 138, 62, 0.4);
+            color: white;
+        }
+
+    .btn-create {
+        background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 25px;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        margin-bottom: 2rem;
+    }
+
+        .btn-create:hover {
+            background: linear-gradient(135deg, #e55a2b, #e57a38);
+            color: white;
+            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+    .sorting-controls {
+        background: white;
+        padding: 1rem 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        margin-bottom: 2rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .sort-label {
+        font-weight: 600;
+        color: #495057;
+        margin-right: 0.5rem;
+    }
+
+    .sort-link {
+        padding: 0.5rem 1rem;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 20px;
+        color: #495057;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+        .sort-link:hover {
+            background: #1e8a3e;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+    .farmers-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .farmer-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 1px solid #f0f0f0;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        min-height: 200px;
+    }
+
+        .farmer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+    .card-header {
+        background: linear-gradient(135deg, #1e8a3e 0%, #25a244 100%);
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+        position: relative;
+        min-width: 250px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .farm-name {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .profile-image-container {
+        margin-top: 1rem;
+    }
+
+    .profile-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 4px solid white;
+        object-fit: cover;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .no-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        border: 2px solid rgba(255,255,255,0.3);
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .description {
+        color: #6c757d;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .contact-info {
+        margin-bottom: 1.5rem;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .info-icon {
+        width: 18px;
+        height: 18px;
+        margin-right: 0.75rem;
+        color: #1e8a3e;
+        flex-shrink: 0;
+    }
+
+    .info-text {
+        color: #495057;
+        flex: 1;
+    }
+
+    .card-actions {
+        padding: 0 1.5rem 1.5rem;
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        flex: 1;
+        padding: 0.6rem 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        text-decoration: none;
+        text-align: center;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        min-width: 70px;
+    }
+
+    .btn-edit {
+        background: #ff6b35;
+        color: white;
+        border-color: #ff6b35;
+    }
+
+        .btn-edit:hover {
+            background: #e55a2b;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+    .btn-details {
+        background: #1e8a3e;
+        color: white;
+        border-color: #1e8a3e;
+    }
+
+        .btn-details:hover {
+            background: #176e31;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+    .btn-delete {
+        background: #dc3545;
+        color: white;
+        border-color: #dc3545;
+    }
+
+        .btn-delete:hover {
+            background: #c82333;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+    .pagination-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-top: 3rem;
+    }
+
+    .pagination {
+        background: white;
+        border-radius: 50px;
+        padding: 0.5rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border: 1px solid #f0f0f0;
+    }
+
+    .page-item .page-link {
+        border: none;
+        padding: 0.75rem 1rem;
+        margin: 0 0.25rem;
+        border-radius: 25px;
+        color: #495057;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .page-item.active .page-link {
+        background: linear-gradient(135deg, #1e8a3e 0%, #25a244 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(30, 138, 62, 0.3);
+    }
+
+    .page-item .page-link:hover {
+        background: #f8f9fa;
+        color: #1e8a3e;
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+
+   
+        .farmers-header
+    {
+        min-height: 60vh;
+        padding: 4rem 0 3rem 0;
+    }
+
+    .farmers-header h1 {
+        font-size: 2.5rem;
+    }
+
+    .header-subtitle {
+        font-size: 1.1rem;
+        padding: 0 15px;
+    }
+
+    .farmers-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .search-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-input {
+        min-width: auto;
+    }
+
+    .sorting-controls {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .card-actions {
+        flex-direction: column;
+    }
+
+    .action-btn {
+        min-width: auto;
+    }
+
+    }
+</style>
+
+<div class="farmers-header">
+    <div class="container">
+        <div class="hero-content">
+            <h1><i class="fas fa-leaf me-3"></i>🌾 NZ Farmers Directory</h1>
+            <p class="header-subtitle">Fresh from our farms to your table - Supporting local New Zealand farmers</p>
+            <a href="#farmers-section" class="btn-search" style="display: inline-block; margin-top: 1rem; text-decoration: none;">
+                <i class="fas fa-users me-2"></i>Explore Farmers
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Search Section -->
+    <div class="search-section" id="farmers-section">
+        <form asp-action="Index" method="get" class="search-form">
+            <input type="text" name="searchString" class="search-input"
+                   placeholder="🔍 Search by farm name, city, region..." value="@ViewData["CurrentFilter"]" />
+            <button type="submit" class="btn btn-search">Search</button>
+        </form>
+    </div>
+
+    <!-- Create New Button -->
+    <div class="text-center">
+        <a asp-action="Create" class="btn-create">
+            <i class="fas fa-plus me-2"></i>✨ Add New Farm
+        </a>
+    </div>
+
+    <!-- Sorting Controls -->
+    <div class="sorting-controls">
+        <span class="sort-label">Sort by:</span>
+        <a asp-action="Index" asp-route-sortOrder="@nameSort" class="sort-link">
+            <i class="fas fa-tractor me-1"></i>📝 Farm Name
+        </a>
+        <a asp-action="Index" asp-route-sortOrder="@citySort" class="sort-link">
+            <i class="fas fa-city me-1"></i>🏙️ City
+        </a>
+        <a asp-action="Index" asp-route-sortOrder="@regionSort" class="sort-link">
+            <i class="fas fa-map-marker-alt me-1"></i>📍 Region
+        </a>
+    </div>
+
+    <!-- Farmers Grid -->
+    <div class="farmers-grid">
         @foreach (var farmer in Model)
         {
-            <tr>
-                <td>@farmer.FarmName</td>
-                <td>@farmer.Description</td>
-                <td>@farmer.PhoneNumber</td>
-                <td>
-                    @if (!string.IsNullOrEmpty(farmer.ProfileImage))
+            <div class="farmer-card">
+                <div class="card-header">
+                    <h3 class="farm-name">@farmer.FarmName</h3>
+                    <div class="profile-image-container">
+                        @if (!string.IsNullOrEmpty(farmer.ProfileImage))
+                        {
+                            <img src="@farmer.ProfileImage" alt="@farmer.FarmName Profile" class="profile-image" />
+                        }
+                        else
+                        {
+                            <div class="no-image">
+                                <i class="fas fa-user-tie" style="font-size: 1.5rem;"></i>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(farmer.Description))
                     {
-                        <img src="@farmer.ProfileImage" alt="Profile Image" style="max-width:100px;" />
+                        <p class="description">@farmer.Description</p>
                     }
-                    else
-                    {
-                        <span>No Image</span>
-                    }
-                </td>
-                <td>@farmer.Address</td>
-                <td>@farmer.City</td>
-                <td>@farmer.Region</td>
-                <td>@farmer.ZipCode</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@farmer.FarmerID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@farmer.FarmerID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@farmer.FarmerID">Delete</a>
-                </td>
-            </tr>
+
+                    <div class="contact-info">
+                        @if (!string.IsNullOrEmpty(farmer.PhoneNumber))
+                        {
+                            <div class="info-item">
+                                <span class="info-icon"><i class="fas fa-phone"></i></span>
+                                <span class="info-text">@farmer.PhoneNumber</span>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(farmer.Address))
+                        {
+                            <div class="info-item">
+                                <span class="info-icon"><i class="fas fa-home"></i></span>
+                                <span class="info-text">@farmer.Address</span>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(farmer.City))
+                        {
+                            <div class="info-item">
+                                <span class="info-icon"><i class="fas fa-map-marker-alt"></i></span>
+                                <span class="info-text">@farmer.City, @farmer.Region</span>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(farmer.ZipCode))
+                        {
+                            <div class="info-item">
+                                <span class="info-icon"><i class="fas fa-mail-bulk"></i></span>
+                                <span class="info-text">@farmer.ZipCode</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="card-actions">
+                    <a asp-action="Edit" asp-route-id="@farmer.FarmerID" class="action-btn btn-edit">Edit</a>
+                    <a asp-action="Details" asp-route-id="@farmer.FarmerID" class="action-btn btn-details">Details</a>
+                    <a asp-action="Delete" asp-route-id="@farmer.FarmerID" class="action-btn btn-delete">Delete</a>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
-<nav>
-    <ul class="pagination">
-        @if (Model.HasPreviousPage)
-        {
-            <li class="page-item">
-                <a class="page-link" href="?page=@(Model.PageIndex - 1)&searchString=@ViewData["CurrentFilter"]&sortOrder=@ViewData["CurrentSort"]">Previous</a>
-            </li>
-        }
-        @for (int i = 1; i <= Model.TotalPages; i++)
-        {
-            <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                <a class="page-link" href="?page=@i&searchString=@ViewData["CurrentFilter"]&sortOrder=@ViewData["CurrentSort"]">@i</a>
-            </li>
-        }
-        @if (Model.HasNextPage)
-        {
-            <li class="page-item">
-                <a class="page-link" href="?page=@(Model.PageIndex + 1)&searchString=@ViewData["CurrentFilter"]&sortOrder=@ViewData["CurrentSort"]">Next</a>
-            </li>
-        }
-    </ul>
-</nav>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-wrapper">
+        <nav>
+            <ul class="pagination">
+                @if (Model.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?page=@(Model.PageIndex - 1)&searchString=@ViewData["CurrentFilter"]&sortOrder=@ViewData["CurrentSort"]">
+                            ← Previous
+                        </a>
+                    </li>
+                }
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link" href="?page=@i&searchString=@ViewData["CurrentFilter"]&sortOrder=@ViewData["CurrentSort"]">@i</a>
+                    </li>
+                }
+                @if (Model.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?page=@(Model.PageIndex + 1)&searchString=@ViewData["CurrentFilter"]&sortOrder=@ViewData["CurrentSort"]">
+                            Next →
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>

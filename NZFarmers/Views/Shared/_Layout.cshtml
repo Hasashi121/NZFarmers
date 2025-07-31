@@ -4,81 +4,402 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - NZFarmers</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/NZFarmers.styles.css" asp-append-version="true" />
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    @* Boostrap icons *@
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-green: #2d5a27;
+            --secondary-green: #4a7c59;
+            --accent-green: #6b8e23;
+            --light-green: #f0f8e8;
+            --orange-accent: #ff6b35;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Modern Navbar Styling */
+        .modern-navbar {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+            padding: 1rem 0;
+            box-shadow: 0 4px 20px rgba(45, 90, 39, 0.15);
+            position: relative;
+            border: none;
+        }
+
+            .modern-navbar::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: linear-gradient(90deg, var(--orange-accent), var(--accent-green), var(--orange-accent));
+            }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.6rem;
+            color: white !important;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+        }
+
+            .navbar-brand:hover {
+                transform: translateY(-2px);
+                color: var(--light-green) !important;
+            }
+
+        .logo-img {
+            height: 65px;
+            width: auto;
+            margin-right: 15px;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover .logo-img {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .brand-main {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .brand-sub {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            font-weight: 300;
+            letter-spacing: 1.2px;
+        }
+
+        /* Navigation Links */
+        .navbar-nav .nav-link {
+            color: white !important;
+            font-weight: 500;
+            margin: 0 8px;
+            padding: 10px 16px !important;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .navbar-nav .nav-link::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+                transition: left 0.5s ease;
+            }
+
+            .navbar-nav .nav-link:hover::before {
+                left: 100%;
+            }
+
+            .navbar-nav .nav-link:hover {
+                background: rgba(255, 255, 255, 0.15);
+                transform: translateY(-2px);
+                color: var(--light-green) !important;
+            }
+
+        /* Dropdown Styling */
+        .dropdown-menu {
+            background: white;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            padding: 8px 0;
+            margin-top: 8px;
+            min-width: 220px;
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            display: flex;
+            align-items: center;
+        }
+
+            .dropdown-item i {
+                margin-right: 10px;
+                width: 16px;
+                color: var(--secondary-green);
+            }
+
+            .dropdown-item:hover {
+                background: var(--light-green);
+                border-left: 3px solid var(--accent-green);
+                transform: translateX(5px);
+                color: var(--primary-green);
+            }
+
+        /* Special Cart Link */
+        .cart-link {
+            background: var(--orange-accent) !important;
+            color: white !important;
+            border-radius: 25px !important;
+            padding: 10px 20px !important;
+            font-weight: 600;
+            position: relative;
+        }
+
+            .cart-link:hover {
+                background: #e55a2b !important;
+                transform: translateY(-2px) scale(1.05);
+            }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff3333;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Mobile Toggle Button */
+        .navbar-toggler {
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            padding: 8px 12px;
+        }
+
+            .navbar-toggler:focus {
+                box-shadow: 0 0 0 0.2rem rgba(255,255,255,0.25);
+            }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* Login Partial Styling */
+        .login-section .nav-link {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 8px 16px !important;
+            margin-left: 8px;
+        }
+
+            .login-section .nav-link:hover {
+                background: rgba(255,255,255,0.2);
+                border-color: rgba(255,255,255,0.4);
+            }
+
+      
+            padding-top: 1rem;
+        }
+
+        .navbar-nav .nav-link {
+            margin: 4px 0;
+            text-align: center;
+        }
+
+        .brand-text {
+            display: none;
+        }
+
+        .navbar-brand {
+            font-size: 1.2rem;
+        }
+
+        }
+
+       
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        }
+
+        .modern-navbar {
+            animation: slideDown 0.8s ease-out;
+        }
+
+            /* Hover effect for entire navbar */
+            .modern-navbar:hover {
+                box-shadow: 0 6px 25px rgba(45, 90, 39, 0.2);
+            }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg modern-navbar">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">NZFarmers</a>
+                <!-- Brand with Logo -->
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/uploads/Screenshot 2025-07-24 144326.png" alt="NZ Farmers Logo" class="logo-img">
+                    <div class="brand-text">
+                        <span class="brand-main">NZFarmers</span>
+                        <span class="brand-sub">FRESH & LOCAL</span>
+                    </div>
+                </a>
+
+                <!-- Mobile Toggle -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1 justify-content-center">
+                        <!-- Home -->
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i> Home
+                            </a>
                         </li>
 
                         <!-- Users & Farmers Dropdown -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="usersFarmersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Users & Farmers
+                            <a class="nav-link dropdown-toggle" href="#" id="usersFarmersDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-users me-1"></i> Community
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="usersFarmersDropdown">
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Farmers" asp-action="Index">Farmers</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Ratings" asp-action="Index">Ratings</a></li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Farmers" asp-action="Index">
+                                        <i class="fas fa-tractor"></i> Our Farmers
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Ratings" asp-action="Index">
+                                        <i class="fas fa-star"></i> Reviews & Ratings
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
                         <!-- Orders & Products Dropdown -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="ordersProductsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Orders & Products
+                            <a class="nav-link dropdown-toggle" href="#" id="ordersProductsDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-shopping-bag me-1"></i> Shop & Orders
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="ordersProductsDropdown">
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Orders" asp-action="Index">Orders</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="OrderDetails" asp-action="Index">Order Details</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="FarmerProducts" asp-action="Index">Farmer Products</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="PaymentDetails" asp-action="Index">Payments</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="DeliveryTrackings" asp-action="Index">Delivery Tracking</a></li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Orders" asp-action="Index">
+                                        <i class="fas fa-receipt"></i> My Orders
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="OrderDetails" asp-action="Index">
+                                        <i class="fas fa-list-alt"></i> Order Details
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="FarmerProducts" asp-action="Index">
+                                        <i class="fas fa-seedling"></i> Fresh Products
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="PaymentDetails" asp-action="Index">
+                                        <i class="fas fa-credit-card"></i> Payments
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="DeliveryTrackings" asp-action="Index">
+                                        <i class="fas fa-truck"></i> Track Delivery
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
                         <!-- Events & Educational Content Dropdown -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-dark" href="#" id="eventsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Events & Education
+                            <a class="nav-link dropdown-toggle" href="#" id="eventsDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-calendar-alt me-1"></i> Events & Learn
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="eventsDropdown">
-                                <li><a class="dropdown-item" asp-area="" asp-controller="FarmerMarkets" asp-action="Index">Farmer Markets</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="FarmerMarketEvents" asp-action="Index">Market Events</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="FarmerMarketParticipations" asp-action="Index">Market Participation</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="EducationalContents" asp-action="Index">Educational Content</a></li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="FarmerMarkets" asp-action="Index">
+                                        <i class="fas fa-store"></i> Farmer Markets
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="FarmerMarketEvents" asp-action="Index">
+                                        <i class="fas fa-calendar-check"></i> Market Events
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="FarmerMarketParticipations" asp-action="Index">
+                                        <i class="fas fa-handshake"></i> Participation
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="EducationalContents" asp-action="Index">
+                                        <i class="fas fa-graduation-cap"></i> Learn Farming
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
-                        <!-- New Cart Link -->
+                        <!-- Privacy -->
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="ShoppingCartItems" asp-action="Index">
-                                <i class="fas fa-shopping-cart"></i> Cart
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">
+                                <i class="fas fa-shield-alt me-1"></i> Privacy
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Right side items -->
+                    <ul class="navbar-nav">
+                        <!-- Cart with Badge -->
+                        <li class="nav-item">
+                            <a class="nav-link cart-link" asp-controller="ShoppingCartItems" asp-action="Index">
+                                <i class="fas fa-shopping-cart me-1"></i> Cart
+                                <span class="cart-badge">3</span>
                             </a>
                         </li>
 
-
-
-
-
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <!-- Login Section -->
+                        <li class="nav-item login-section">
+                            <partial name="_LoginPartial" />
                         </li>
                     </ul>
                 </div>
-                <partial name="_LoginPartial" />
             </div>
         </nav>
     </header>
@@ -89,15 +410,37 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - NZFarmers - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-top footer text-muted" style="background: var(--light-green); border-color: var(--accent-green) !important;">
+        <div class="container" style="color: var(--text-dark);">
+            &copy; 2025 - NZFarmers - <a asp-area="" asp-controller="Home" asp-action="Privacy" style="color: var(--secondary-green);">Privacy</a>
         </div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Add some interactive JavaScript -->
+    <script>
+        // Add smooth scrolling and interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add active class to current page
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                    link.style.background = 'rgba(255,255,255,0.2)';
+                }
+            });
+
+            // Add cart item count (you can replace this with actual cart count)
+            const cartBadge = document.querySelector('.cart-badge');
+            // cartBadge.textContent = getCartItemCount(); // Replace with your cart logic
+        });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

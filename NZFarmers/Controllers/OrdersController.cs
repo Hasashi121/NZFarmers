@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NZFarmers.Areas.Identity.Data;
 using NZFarmers.Data;
+using NZFarmers.Models;
 
 namespace NZFarmers.Controllers
 {
@@ -159,11 +160,57 @@ namespace NZFarmers.Controllers
             return RedirectToAction(nameof(Index));
         }
         [HttpGet]
-        public IActionResult PaymentSuccess()
+        public async Task<IActionResult> PaymentSuccess()
         {
-            // You can show a confirmation page or process post-payment logic here.
-            return View();
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId))
+                return Challenge();
+
+            // Retrieve the user's shopping cart items
+            var cartItems = await _context.ShoppingCartItems
+                .Include(ci => ci.FarmerProduct)
+                .Where(ci => ci.UserID == userId)
+                .ToListAsync();
+
+            if (!cartItems.Any())
+                return RedirectToAction("Index", "ShoppingCartItems");
+
+            // Calculate total
+            decimal totalPrice = cartItems.Sum(item => item.Quantity * item.FarmerProduct.Price);
+
+            // Create new Order
+            var order = new Order
+            {
+                UserID = userId,
+                TotalPrice = totalPrice,
+                Status = OrderStatus.Processing,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync(); // So we get the OrderID for foreign key
+
+            // Create OrderDetails
+            foreach (var item in cartItems)
+            {
+                var orderDetail = new OrderDetail
+                {
+                    OrderID = order.OrderID,
+                    FarmerProductID = item.FarmerProductID,
+                    Quantity = item.Quantity,
+                    Subtotal = item.Quantity * item.FarmerProduct.Price
+                };
+                _context.OrderDetails.Add(orderDetail);
+            }
+
+            // Clear cart
+            _context.ShoppingCartItems.RemoveRange(cartItems);
+
+            await _context.SaveChangesAsync();
+
+            return View(); // Optionally pass `order` to the view
         }
+
 
         // GET: Orders/PaymentCanceled
         [HttpGet]

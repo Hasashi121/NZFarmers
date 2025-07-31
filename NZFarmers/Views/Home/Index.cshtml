@@ -22,56 +22,119 @@
         color: var(--dark-text);
     }
 
+    /* Full-screen Hero Section with Background Image */
     .marketplace-header {
-        background: linear-gradient(135deg, var(--primary-color) 0%, #25a244 100%);
+        background: linear-gradient(rgba(30, 138, 62, 0.6), rgba(30, 138, 62, 0.6)), url('/uploads/Background.jpeg');
+        background-size: cover;
+        background-position: center center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
         color: white;
-        padding: 40px 20px;
-        border-radius: 0 0 20px 20px;
+        padding: 0;
+        border-radius: 0;
         text-align: center;
-        margin-bottom: 30px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
     }
+
+        .marketplace-header h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+            letter-spacing: -1px;
+        }
 
     .header-subtitle {
-        font-size: 1.2rem;
-        opacity: 0.9;
+        font-size: 1.4rem;
+        opacity: 0.95;
         margin-top: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        font-weight: 300;
+        margin-bottom: 2.5rem;
     }
 
+    .hero-btn {
+        background-color: var(--accent-color);
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        font-weight: 600;
+    }
+
+        .hero-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
+            color: white;
+        }
+
+    /* Enhanced Filter Bar */
     .filter-bar {
         background: white;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         margin-bottom: 30px;
+        margin-top: -80px;
+        position: relative;
+        z-index: 2;
     }
 
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 12px 15px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(30, 138, 62, 0.25);
+        }
+
     .filter-button {
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
-        font-weight: 500;
+        background: linear-gradient(135deg, var(--primary-color), #25a244);
+        border: none;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-weight: 600;
         transition: all 0.3s;
     }
 
-    .filter-button:hover {
-        background-color: #176e31;
-        border-color: #176e31;
-        transform: translateY(-2px);
-    }
+        .filter-button:hover {
+            background: linear-gradient(135deg, #176e31, #1e7a33);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 138, 62, 0.4);
+        }
 
     .card {
         border: none;
-        border-radius: 12px;
+        border-radius: 15px;
         overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
         transition: all 0.3s ease;
         height: 100%;
     }
 
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-    }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
 
     .card-img-top {
         height: 200px;
@@ -84,21 +147,24 @@
         left: 15px;
         background: var(--accent-color);
         color: white;
-        padding: 5px 12px;
-        font-size: 14px;
-        border-radius: 50px;
-        font-weight: 500;
+        padding: 5px 15px;
+        font-size: 0.85rem;
+        border-radius: 25px;
+        font-weight: 600;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 1;
     }
 
     .card-body {
-        padding: 20px;
+        padding: 25px;
     }
 
     .card-title {
-        font-weight: 600;
-        margin-bottom: 8px;
-        color: var(--dark-text);
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+        font-size: 1.3rem;
+        line-height: 1.4;
     }
 
     .farm-name {
@@ -106,18 +172,19 @@
         font-weight: 500;
         display: flex;
         align-items: center;
-        margin-bottom: 12px;
+        margin-bottom: 15px;
+        font-size: 0.95rem;
     }
 
-    .farm-name i {
-        margin-right: 6px;
-        color: var(--primary-color);
-    }
+        .farm-name i {
+            margin-right: 8px;
+            color: #25a244;
+        }
 
     .price-tag {
         font-weight: 700;
         color: var(--primary-color);
-        font-size: 1.3rem;
+        font-size: 1.4rem;
         margin-bottom: 12px;
     }
 
@@ -125,35 +192,51 @@
         display: flex;
         align-items: center;
         color: #6c757d;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
+        font-size: 0.85rem;
     }
 
-    .location i {
-        margin-right: 6px;
-        color: var(--accent-color);
-    }
+        .location i {
+            margin-right: 5px;
+            color: var(--accent-color);
+        }
 
     .view-btn {
-        background-color: var(--primary-color);
+        background: linear-gradient(135deg, var(--primary-color), #25a244);
         border: none;
-        padding: 10px;
+        padding: 12px 20px;
         border-radius: 8px;
-        transition: all 0.2s;
-        font-weight: 500;
+        transition: all 0.3s ease;
+        font-weight: 600;
+        width: 100%;
+        color: white;
     }
 
-    .view-btn:hover {
-        background-color: #176e31;
-        transform: translateY(-2px);
-    }
+        .view-btn:hover {
+            background: linear-gradient(135deg, #176e31, #1e7a33);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 138, 62, 0.4);
+            color: white;
+        }
 
     .empty-results {
         text-align: center;
-        padding: 40px;
+        padding: 60px 20px;
         background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
     }
+
+        .empty-results i {
+            font-size: 4rem;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .empty-results h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
 
     .banner-section {
         background-color: var(--light-accent);
@@ -178,11 +261,11 @@
         text-align: center;
     }
 
-    .banner-image img {
-        max-width: 100%;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    }
+        .banner-image img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
 
     .section-heading {
         font-weight: 700;
@@ -190,26 +273,74 @@
         position: relative;
         display: inline-block;
         padding-bottom: 10px;
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        text-align: center;
+        width: 100%;
+        margin-bottom: 50px;
     }
 
-    .section-heading::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 50px;
-        height: 3px;
-        background-color: var(--accent-color);
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+   
+
+    .marketplace-header h1 {
+        font-size: 2.8rem;
+    }
+
+    .header-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .section-heading {
+        font-size: 2rem;
+    }
+
+    .banner-content {
+        flex-direction: column;
+    }
+
+    .banner-text {
+        padding-right: 0;
+        margin-bottom: 30px;
+    }
+
+    }
+
+    
+
+    .header-subtitle {
+        font-size: 1.1rem;
+        padding: 0 15px;
+    }
+
     }
 </style>
 
-<!-- Hero Section -->
+<!-- Full-Screen Hero Section with Background -->
 <div class="marketplace-header">
-    <h1><i class="fas fa-leaf me-2"></i>NZFarmers Marketplace</h1>
-    <p class="header-subtitle">Fresh from our farms to your table - Supporting local New Zealand farmers</p>
+    <div class="container">
+        <div class="hero-content">
+            <h1><i class="fas fa-leaf me-3"></i>NZFarmers Marketplace</h1>
+            <p class="header-subtitle">Fresh from our farms to your table - Supporting local New Zealand farmers</p>
+            <a href="#products" class="hero-btn">
+                <i class="fas fa-shopping-basket me-2"></i>Shop Now
+            </a>
+        </div>
+    </div>
 </div>
 
-<!-- Filter Bar -->
+<!-- Enhanced Filter Bar -->
 <div class="container">
     <div class="filter-bar">
         <form method="get" class="row g-3 align-items-end">
@@ -219,7 +350,7 @@
                     <option value="">All Categories</option>
                     @foreach (var category in Enum.GetValues(typeof(NZFarmers.Models.ProductCategory)))
                     {
-                        @category
+                        <option value="@category">@category</option>
                     }
                 </select>
             </div>
@@ -237,9 +368,9 @@
 </div>
 
 <!-- Featured Products Section -->
-<div class="container">
+<div class="container" id="products">
     <h2 class="section-heading mb-4">Featured Products</h2>
-    
+
     @if (!Model.Any())
     {
         <div class="empty-results">
@@ -257,8 +388,8 @@
                 <div class="col-md-6 col-lg-4">
                     <div class="card h-100 position-relative">
                         <span class="category-badge">@product.Category</span>
-                        <img src="@(string.IsNullOrEmpty(product.ImageURL) ? "/images/default-product.jpg" : product.ImageURL)" 
-                            class="card-img-top" alt="@product.ProductName" />
+                        <img src="@(string.IsNullOrEmpty(product.ImageURL) ? "/images/default-product.jpg" : product.ImageURL)"
+                             class="card-img-top" alt="@product.ProductName" />
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title">@product.ProductName</h5>
                             <div class="farm-name">
@@ -311,11 +442,21 @@
     </div>
 </div>
 
-<!-- Testimonials or Recent Farmers Section could go here -->
-
 <!-- Scripts -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Handle any client-side interactions here
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
     });
 </script>

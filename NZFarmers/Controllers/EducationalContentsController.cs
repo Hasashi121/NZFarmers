@@ -6,6 +6,7 @@ using NZFarmers.Models;
 
 namespace NZFarmers.Controllers
 {
+    [Authorize] // This ensures all actions require authentication by default
     public class EducationalContentsController : Controller
     {
         private readonly NZFarmersContext _context;
@@ -16,16 +17,14 @@ namespace NZFarmers.Controllers
         }
 
         // GET: EducationalContents
-        // Anyone can see the list of educational content (no authorization required)
-        [AllowAnonymous]
+        // Any authenticated user can view the list
         public async Task<IActionResult> Index()
         {
             return View(await _context.EducationalContents.ToListAsync());
         }
 
         // GET: EducationalContents/Details/5
-        // Anyone can view details of educational content (no authorization required)
-        [AllowAnonymous]
+        // Any authenticated user can view details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();

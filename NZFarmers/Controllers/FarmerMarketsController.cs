@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -20,12 +21,16 @@ namespace NZFarmers.Controllers
         }
 
         // GET: FarmerMarkets
+        // Anyone can view the list (no login required)
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             return View(await _context.FarmerMarkets.ToListAsync());
         }
 
         // GET: FarmerMarkets/Details/5
+        // Anyone can view details (no login required)
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,16 +49,17 @@ namespace NZFarmers.Controllers
         }
 
         // GET: FarmerMarkets/Create
+        // Only Admins can create farmer market events
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: FarmerMarkets/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("EventID,Title,Location,Date,Description,CreatedAt")] FarmerMarkets farmerMarkets)
         {
             if (ModelState.IsValid)
@@ -66,6 +72,7 @@ namespace NZFarmers.Controllers
         }
 
         // GET: FarmerMarkets/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -82,10 +89,9 @@ namespace NZFarmers.Controllers
         }
 
         // POST: FarmerMarkets/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("EventID,Title,Location,Date,Description,CreatedAt")] FarmerMarkets farmerMarkets)
         {
             if (id != farmerMarkets.EventID)
@@ -117,6 +123,7 @@ namespace NZFarmers.Controllers
         }
 
         // GET: FarmerMarkets/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -137,6 +144,7 @@ namespace NZFarmers.Controllers
         // POST: FarmerMarkets/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var farmerMarkets = await _context.FarmerMarkets.FindAsync(id);

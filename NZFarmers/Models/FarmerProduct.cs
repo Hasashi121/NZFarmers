@@ -67,5 +67,6 @@ namespace NZFarmers.Models
 
         // One-to-many relationship: a product can appear in many order details
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+
     }
 }
