@@ -63,7 +63,7 @@ namespace NZFarmers.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ParticipationID,FarmerID,EventID")] FarmerMarketParticipation farmerMarketParticipation)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 _context.Add(farmerMarketParticipation);
                 await _context.SaveChangesAsync();
@@ -104,7 +104,7 @@ namespace NZFarmers.Controllers
                 return NotFound();
             }
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 try
                 {
