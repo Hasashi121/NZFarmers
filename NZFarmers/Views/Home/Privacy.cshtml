@@ -1,6 +1,117 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<style>
+    .privacy-hero {
+        background: linear-gradient(90deg, #1e8a3e 60%, #ff6b35 100%);
+        color: #fff;
+        padding: 60px 0 40px 0;
+        border-radius: 0 0 30px 30px;
+        box-shadow: 0 4px 24px rgba(30,138,62,0.12);
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+        .privacy-hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .privacy-hero p {
+            font-size: 1.25rem;
+            opacity: 0.95;
+        }
+
+    .privacy-section {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+        padding: 40px 30px;
+        margin-bottom: 32px;
+    }
+
+        .privacy-section h2 {
+            color: #1e8a3e;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 18px;
+        }
+
+        .privacy-section ul {
+            padding-left: 1.2em;
+        }
+
+        .privacy-section i {
+            color: #ff6b35;
+            margin-right: 8px;
+        }
+     
+        .privacy-hero h1
+
+    {
+        font-size: 2rem;
+    }
+
+    .privacy-section {
+        padding: 24px 10px;
+    }
+
+    }
+</style>
+
+<div class="privacy-hero">
+    <h1><i class="fas fa-user-shield me-2"></i>@ViewData["Title"]</h1>
+    <p>Your privacy is important to us. This page explains how NZFarmers collects, uses, and protects your information.</p>
+</div>
+
+<div class="container">
+    <div class="privacy-section mb-4">
+        <h2><i class="fas fa-info-circle"></i> What Information We Collect</h2>
+        <ul>
+            <li>Personal details (name, email, address) when you register or place an order</li>
+            <li>Order and payment information</li>
+            <li>Usage data (pages visited, actions taken)</li>
+            <li>Optional: feedback, reviews, or ratings you provide</li>
+        </ul>
+    </div>
+    <div class="privacy-section mb-4">
+        <h2><i class="fas fa-lock"></i> How We Use Your Information</h2>
+        <ul>
+            <li>To process orders and deliver products</li>
+            <li>To improve our services and personalize your experience</li>
+            <li>To communicate updates, offers, or support</li>
+            <li>To comply with legal obligations</li>
+        </ul>
+    </div>
+    <div class="privacy-section mb-4">
+        <h2><i class="fas fa-user-secret"></i> How We Protect Your Data</h2>
+        <ul>
+            <li>We use secure servers and encryption for sensitive data</li>
+            <li>Access to your data is restricted to authorized personnel only</li>
+            <li>We never sell your personal information to third parties</li>
+        </ul>
+    </div>
+    <div class="privacy-section mb-4">
+        <h2><i class="fas fa-user-cog"></i> Your Rights & Choices</h2>
+        <ul>
+            <li>Access, update, or delete your personal information at any time</li>
+            <li>Opt out of marketing communications</li>
+            <li>Request a copy of your data</li>
+        </ul>
+    </div>
+    <div class="privacy-section mb-4">
+        <h2><i class="fas fa-question-circle"></i> Contact Us</h2>
+        <p>
+            If you have questions about our privacy policy or your data, please contact us at
+            <a href="mailto:support@nzfarmers.co.nz">support@nzfarmers.co.nz</a>.
+        </p>
+    </div>
+    <div class="text-center text-muted small mb-4">
+        Last updated: August 04, 2025
+    </div>
+</div>

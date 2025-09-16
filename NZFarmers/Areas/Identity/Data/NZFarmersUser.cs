@@ -32,7 +32,6 @@ namespace NZFarmers.Areas.Identity.Data
         [Phone(ErrorMessage = "Invalid phone number format.")]
         [RegularExpression(@"^\+?\d{10,15}$", ErrorMessage = "Phone number must be between 10 and 15 digits.")]
         public string ContactNumber { get; set; } = string.Empty;
-
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation property for ratings

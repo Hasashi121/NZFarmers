@@ -72,6 +72,7 @@ namespace NZFarmers.Controllers
         }
 
         // GET: FarmerProducts/Create
+        [Authorize(Roles = "Admin,Farmer")]
         public IActionResult Create()
         {
             ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "FarmName");
@@ -83,6 +84,7 @@ namespace NZFarmers.Controllers
 
 
         // POST: FarmerProducts/Create
+        [Authorize(Roles = "Admin,Farmer")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(FarmerProduct farmerProduct)
@@ -120,6 +122,7 @@ namespace NZFarmers.Controllers
         }
 
         // GET: FarmerProducts/Edit/
+        [Authorize(Roles = "Admin,Farmer")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -135,6 +138,7 @@ namespace NZFarmers.Controllers
         }
 
         // POST: FarmerProducts/Edit/
+        [Authorize(Roles = "Admin,Farmer")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("FarmerProductID,FarmerID,Category,Price,Stock,ImageURL")] FarmerProduct farmerProduct)
@@ -166,6 +170,7 @@ namespace NZFarmers.Controllers
         }
 
         // GET: FarmerProducts/Delete/5
+        [Authorize(Roles = "Admin,Farmer")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -182,6 +187,7 @@ namespace NZFarmers.Controllers
         }
 
         // POST: FarmerProducts/Delete/5
+        [Authorize(Roles = "Admin,Farmer")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

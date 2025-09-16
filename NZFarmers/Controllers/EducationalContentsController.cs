@@ -6,7 +6,6 @@ using NZFarmers.Models;
 
 namespace NZFarmers.Controllers
 {
-    [Authorize] // This ensures all actions require authentication by default
     public class EducationalContentsController : Controller
     {
         private readonly NZFarmersContext _context;

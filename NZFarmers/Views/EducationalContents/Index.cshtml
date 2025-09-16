@@ -12,7 +12,7 @@
                 <div class="col-lg-6">
                     <h1 class="hero-title">Learn & Grow</h1>
                     <p class="hero-subtitle">Discover farming tips, sustainable practices, and educational resources to help you succeed</p>
-                    @if (User.IsInRole("Admin") || User.IsInRole("Farmer"))
+                    @if (User.IsInRole("Admin"))
                     {
                         <a asp-action="Create" class="btn btn-primary btn-lg">
                             <i class="fas fa-plus"></i> Add New Resource
@@ -60,7 +60,7 @@
                                     <i class="fas fa-external-link-alt"></i> View Resource
                                 </a>
 
-                                @if (User.IsInRole("Admin") || User.IsInRole("Farmer"))
+                                @if (User.IsInRole("Admin"))
                                 {
                                     <div class="admin-actions">
                                         <a asp-action="Edit" asp-route-id="@item.ContentID" class="btn btn-outline-secondary btn-sm">
@@ -88,7 +88,7 @@
                     </div>
                     <h3>No Educational Resources Yet</h3>
                     <p>Check back soon for helpful farming tips and resources!</p>
-                    @if (User.IsInRole("Admin") || User.IsInRole("Farmer"))
+                    @if (User.IsInRole("Admin"))
                     {
                         <a asp-action="Create" class="btn btn-primary">Add First Resource</a>
                     }
@@ -258,7 +258,10 @@
         margin-bottom: 30px;
     }
 
-    .hero-section {
+    
+        .hero-section
+
+    {
         padding: 50px 0;
     }
 

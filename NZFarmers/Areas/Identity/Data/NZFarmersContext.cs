@@ -141,8 +141,53 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
     }
 
 );
-        // Add this to your OnModelCreating method in NZFarmersContext.cs
-        // Place this after your existing seed data for FarmerProduct
+        builder.Entity<FarmerMarkets>().HasData(
+            new FarmerMarkets
+            {
+                EventID = 1,
+                Title = "Hamilton Harvest Fair",
+                Location = "Claudelands Event Centre, Hamilton",
+                Date = new DateTime(2024, 9, 14, 8, 0, 0, DateTimeKind.Utc),
+                Description = "Seasonal produce, artisan breads, and live folk music from local performers.",
+                CreatedAt = new DateTime(2024, 8, 1, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new FarmerMarkets
+            {
+                EventID = 2,
+                Title = "Christchurch Spring Market",
+                Location = "Cathedral Square, Christchurch",
+                Date = new DateTime(2024, 10, 5, 9, 30, 0, DateTimeKind.Utc),
+                Description = "Celebrate spring with organic vegetables, flowers, and children's workshops.",
+                CreatedAt = new DateTime(2024, 8, 5, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new FarmerMarkets
+            {
+                EventID = 3,
+                Title = "Wellington Waterfront Farmers",
+                Location = "Wellington Waterfront, Wellington",
+                Date = new DateTime(2024, 11, 2, 7, 0, 0, DateTimeKind.Utc),
+                Description = "Farm-to-table tastings featuring coastal seafood and fresh dairy selections.",
+                CreatedAt = new DateTime(2024, 8, 10, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new FarmerMarkets
+            {
+                EventID = 4,
+                Title = "Otago Artisan Market",
+                Location = "Octagon Square, Dunedin",
+                Date = new DateTime(2024, 12, 7, 9, 0, 0, DateTimeKind.Utc),
+                Description = "Handmade preserves, cheeses, and cooking demos by local chefs.",
+                CreatedAt = new DateTime(2024, 8, 15, 0, 0, 0, DateTimeKind.Utc)
+            },
+            new FarmerMarkets
+            {
+                EventID = 5,
+                Title = "Auckland Night Farmers Market",
+                Location = "Silo Park, Auckland",
+                Date = new DateTime(2024, 9, 28, 16, 0, 0, DateTimeKind.Utc),
+                Description = "Evening market with gourmet street food, live DJs, and seasonal fruit stalls.",
+                CreatedAt = new DateTime(2024, 8, 20, 0, 0, 0, DateTimeKind.Utc)
+            }
+        );
 
         // Educational Content Seed Data
         builder.Entity<EducationalContent>().HasData(
