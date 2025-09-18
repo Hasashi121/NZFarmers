@@ -12,11 +12,12 @@ using NZFarmers.Models;
 
 namespace NZFarmers.Controllers
 {
-    
+
     public class FarmerProductsController : Controller
     {
         private readonly NZFarmersContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private const int PageSize = 12; // Products per page
 
         public FarmerProductsController(NZFarmersContext context, IWebHostEnvironment webHostEnvironment)
         {
@@ -25,12 +26,16 @@ namespace NZFarmers.Controllers
         }
 
         // GET: FarmerProducts
-        public async Task<IActionResult> Index(string searchString, string categoryFilter)
+        public async Task<IActionResult> Index(
+            string searchString,
+            string categoryFilter,
+            int? pageNumber)
         {
             var query = _context.FarmerProducts
                 .Include(f => f.Farmer)
                 .AsQueryable();
 
+            // Search functionality
             if (!string.IsNullOrEmpty(searchString))
             {
                 query = query.Where(p =>
@@ -39,20 +44,27 @@ namespace NZFarmers.Controllers
                     p.Farmer.City.Contains(searchString));
             }
 
+            // Category filter
             if (!string.IsNullOrEmpty(categoryFilter) && Enum.TryParse<ProductCategory>(categoryFilter, out var parsedCategory))
             {
                 query = query.Where(p => p.Category == parsedCategory);
             }
 
+            // Order by product name for consistent pagination
+            query = query.OrderBy(p => p.ProductName);
+
+            // Store current filters for view
             ViewData["CurrentSearch"] = searchString;
             ViewData["CurrentCategory"] = categoryFilter;
             ViewData["CategoryList"] = new SelectList(Enum.GetValues(typeof(ProductCategory)));
 
-            var farmerProducts = await query.ToListAsync();
-            return View(farmerProducts);
+            // Apply pagination
+            int pageIndex = pageNumber ?? 1;
+            var paginatedProducts = await PaginatedList<FarmerProduct>.CreateAsync(
+                query.AsNoTracking(), pageIndex, PageSize);
+
+            return View(paginatedProducts);
         }
-
-
 
         // GET: FarmerProducts/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -60,7 +72,6 @@ namespace NZFarmers.Controllers
             if (id == null)
                 return NotFound();
 
-            // Removed .Include(f => f.Product)
             var farmerProduct = await _context.FarmerProducts
                 .Include(f => f.Farmer)
                 .FirstOrDefaultAsync(m => m.FarmerProductID == id);
@@ -78,10 +89,8 @@ namespace NZFarmers.Controllers
             ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "FarmName");
             ViewData["Category"] = new SelectList(Enum.GetValues(typeof(ProductCategory)));
 
-            return View(); 
+            return View();
         }
-
-
 
         // POST: FarmerProducts/Create
         [Authorize(Roles = "Admin,Farmer")]
@@ -89,8 +98,7 @@ namespace NZFarmers.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(FarmerProduct farmerProduct)
         {
-            // Typical pattern: if valid, save; otherwise re-show form
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 // Handle file upload if present
                 if (farmerProduct.ImageFile != null)
@@ -141,12 +149,12 @@ namespace NZFarmers.Controllers
         [Authorize(Roles = "Admin,Farmer")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FarmerProductID,FarmerID,Category,Price,Stock,ImageURL")] FarmerProduct farmerProduct)
+        public async Task<IActionResult> Edit(int id, [Bind("FarmerProductID,FarmerID,ProductName,Description,Category,Price,Stock,ImageURL")] FarmerProduct farmerProduct)
         {
             if (id != farmerProduct.FarmerProductID)
                 return NotFound();
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 try
                 {
