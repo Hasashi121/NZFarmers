@@ -1,59 +1,561 @@
-﻿@model IEnumerable<NZFarmers.Models.FarmerMarketEvent>
+﻿@model PaginatedList<NZFarmers.Models.FarmerMarketEvent>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Farmer Market Events";
 }
 
-<h1>Index</h1>
+<div class="farmer-market-events-page">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="hero-inner">
+                <div class="hero-text">
+                    <h1 class="hero-title">Farmer Market Events</h1>
+                    <p class="hero-subtitle">Discover local farming events, markets, and community gatherings</p>
+                </div>
+                <div class="hero-actions">
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Create" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus"></i> Create New Event
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.EventID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.EventID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.EventID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <!-- Search and Filter Section -->
+    <div class="search-section">
+        <div class="search-content">
+            <div class="search-card">
+                <form method="get" asp-action="Index">
+                    <div class="search-grid">
+                        <div class="search-field">
+                            <label for="searchString" class="form-label">Search Events</label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="searchString" 
+                                   name="searchString" 
+                                   value="@ViewData["CurrentFilter"]" 
+                                   placeholder="Search by title, location, or description...">
+                        </div>
+                        <div class="search-field">
+                            <label for="locationFilter" class="form-label">Location</label>
+                            <select class="form-select" id="locationFilter" name="locationFilter">
+                                <option value="">All Locations</option>
+                                @foreach (var location in ViewBag.Locations)
+                                {
+                                    <option value="@location.Value" @@(ViewData["CurrentLocationFilter"]?.ToString() == location.Value ? "selected" : "")>
+                                        @location.Text
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                        <div class="search-field">
+                            <label for="dateFilter" class="form-label">Event Date</label>
+                            <input type="date" 
+                                   class="form-control" 
+                                   id="dateFilter" 
+                                   name="dateFilter" 
+                                   value="@(ViewData["CurrentDateFilter"]?.ToString() ?? "")">
+                        </div>
+                        <div class="search-field">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-success btn-search">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Events Grid -->
+    <div class="events-section">
+        <div class="events-content">
+            @if (Model.Any())
+            {
+                <div class="events-grid">
+                    @foreach (var item in Model)
+                    {
+                        <div class="event-item">
+                            <div class="event-card">
+                                <div class="card-header">
+                                    <div class="date-badge">
+                                        <span class="day">@item.Date.Day</span>
+                                        <span class="month">@item.Date.ToString("MMM")</span>
+                                    </div>
+                                    <div class="location">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        @item.Location
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <h5 class="card-title">@item.Title</h5>
+                                    <p class="card-description">
+                                        @if (!string.IsNullOrEmpty(item.Description))
+                                        {
+                                            @(item.Description.Length > 100 ? item.Description.Substring(0, 100) + "..." : item.Description)
+                                        }
+                                        else
+                                        {
+                                            <em>No description available</em>
+                                        }
+                                    </p>
+                                    <div class="event-time">
+                                        <i class="fas fa-clock"></i>
+                                        @item.Date.ToString("MMM dd, yyyy")
+                                    </div>
+                                </div>
+
+                                <div class="card-actions">
+                                    <a asp-action="Details" asp-route-id="@item.EventID" class="btn btn-outline-primary">
+                                        <i class="fas fa-eye"></i> View Details
+                                    </a>
+
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <div class="admin-actions">
+                                            <a asp-action="Edit" asp-route-id="@item.EventID" class="btn btn-outline-secondary btn-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.EventID" class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-wrapper">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            @if (Model.HasPreviousPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" 
+                                       asp-action="Index" 
+                                       asp-route-sortOrder="@ViewData["CurrentSort"]"
+                                       asp-route-pageNumber="@(Model.PageIndex - 1)"
+                                       asp-route-searchString="@ViewData["CurrentFilter"]"
+                                       asp-route-locationFilter="@ViewData["CurrentLocationFilter"]"
+                                       asp-route-dateFilter="@ViewData["CurrentDateFilter"]">
+                                        Previous
+                                    </a>
+                                </li>
+                            }
+
+                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                                    <a class="page-link" 
+                                       asp-action="Index" 
+                                       asp-route-sortOrder="@ViewData["CurrentSort"]"
+                                       asp-route-pageNumber="@i"
+                                       asp-route-searchString="@ViewData["CurrentFilter"]"
+                                       asp-route-locationFilter="@ViewData["CurrentLocationFilter"]"
+                                       asp-route-dateFilter="@ViewData["CurrentDateFilter"]">
+                                        @i
+                                    </a>
+                                </li>
+                            }
+
+                            @if (Model.HasNextPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" 
+                                       asp-action="Index" 
+                                       asp-route-sortOrder="@ViewData["CurrentSort"]"
+                                       asp-route-pageNumber="@(Model.PageIndex + 1)"
+                                       asp-route-searchString="@ViewData["CurrentFilter"]"
+                                       asp-route-locationFilter="@ViewData["CurrentLocationFilter"]"
+                                       asp-route-dateFilter="@ViewData["CurrentDateFilter"]">
+                                        Next
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>No Market Events Found</h3>
+                    <p>Check back soon for upcoming farmer market events!</p>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Create" class="btn btn-primary">Create First Event</a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .farmer-market-events-page {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 100vh;
+        width: 100%;
+    }
+
+    .hero-section {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 60px 0;
+        margin-bottom: 40px;
+        width: 100%;
+    }
+
+    .hero-content {
+        width: 100%;
+        padding: 0 2rem;
+    }
+
+    .hero-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 2rem;
+    }
+
+    .hero-text {
+        flex: 1;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .hero-actions {
+        flex-shrink: 0;
+    }
+
+    .search-section {
+        padding: 0 0 40px 0;
+        width: 100%;
+    }
+
+    .search-content {
+        width: 100%;
+        padding: 0 2rem;
+    }
+
+    .search-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .search-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr auto;
+        gap: 1.5rem;
+        align-items: end;
+    }
+
+    .search-field {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: #2d3748;
+    }
+
+    .form-control,
+    .form-select {
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 12px 15px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        outline: none;
+    }
+
+    .btn-search {
+        height: 48px;
+        padding: 0 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .events-section {
+        padding: 0 0 60px 0;
+        width: 100%;
+    }
+
+    .events-content {
+        width: 100%;
+        padding: 0 2rem;
+    }
+
+    .events-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .event-item {
+        width: 100%;
+    }
+
+    .event-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+        .event-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+    .card-header {
+        padding: 20px 20px 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .date-badge {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        padding: 10px;
+        border-radius: 10px;
+        text-align: center;
+        min-width: 60px;
+    }
+
+        .date-badge .day {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .date-badge .month {
+            display: block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+    .location {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+        .location i {
+            margin-right: 5px;
+        }
+
+    .card-body {
+        padding: 20px;
+        flex-grow: 1;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 15px;
+    }
+
+    .card-description {
+        color: #718096;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    .event-time {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+        .event-time i {
+            margin-right: 5px;
+        }
+
+    .card-actions {
+        padding: 0 20px 20px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .admin-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+        .admin-actions .btn {
+            width: 35px;
+            height: 35px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .empty-icon {
+        font-size: 80px;
+        color: #e2e8f0;
+        margin-bottom: 30px;
+    }
+
+    .empty-state h3 {
+        color: #2d3748;
+        margin-bottom: 15px;
+    }
+
+    .empty-state p {
+        color: #718096;
+        margin-bottom: 30px;
+    }
+
+    .pagination-wrapper {
+        margin-top: 40px;
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 2rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #218838, #1ea584);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+
+    .btn-success {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        border: none;
+        color: white;
+    }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #218838, #1ea584);
+        }
+
+    /* Responsive Design */
+    @@media (max-width: 1200px) {
+        .search-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .events-grid {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .hero-inner {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 2rem;
+        }
+
+        .search-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .events-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .card-actions {
+            flex-direction: column;
+            gap: 15px;
+            align-items: stretch;
+        }
+
+        .admin-actions {
+            justify-content: center;
+        }
+
+        .hero-content,
+        .search-content,
+        .events-content {
+            padding: 0 1rem;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .events-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .event-card {
+            margin: 0;
+        }
+    }
+</style>

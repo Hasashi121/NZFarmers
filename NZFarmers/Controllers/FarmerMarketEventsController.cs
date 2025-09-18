@@ -11,10 +11,10 @@ using NZFarmers.Models;
 
 namespace NZFarmers.Controllers
 {
-    [Authorize] // Ensure only logged-in users can access
     public class FarmerMarketEventsController : Controller
     {
         private readonly NZFarmersContext _context;
+        private const int PageSize = 10; // Pagination
 
         public FarmerMarketEventsController(NZFarmersContext context)
         {
@@ -22,12 +22,95 @@ namespace NZFarmers.Controllers
         }
 
         // GET: FarmerMarketEvents
-        public async Task<IActionResult> Index()
+        // Any authenticated user can view the list
+        public async Task<IActionResult> Index(
+            string searchString,
+            string sortOrder,
+            string locationFilter,
+            DateTime? dateFilter,
+            int? pageNumber)
         {
-            return View(await _context.FarmerMarketEvents.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["TitleSortParm"] = string.IsNullOrEmpty(sortOrder) ? "title_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["LocationSortParm"] = sortOrder == "Location" ? "location_desc" : "Location";
+            ViewData["CreatedAtSortParm"] = sortOrder == "CreatedAt" ? "createdat_desc" : "CreatedAt";
+
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["CurrentLocationFilter"] = locationFilter;
+            ViewData["CurrentDateFilter"] = dateFilter;
+
+            var eventsQuery = from e in _context.FarmerMarketEvents
+                              select e;
+
+            // Search functionality
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                eventsQuery = eventsQuery.Where(e => e.Title.Contains(searchString)
+                                        || e.Location.Contains(searchString)
+                                        || (e.Description != null && e.Description.Contains(searchString)));
+            }
+
+            // Filter by location
+            if (!string.IsNullOrEmpty(locationFilter))
+            {
+                eventsQuery = eventsQuery.Where(e => e.Location.Contains(locationFilter));
+            }
+
+            // Filter by date
+            if (dateFilter.HasValue)
+            {
+                eventsQuery = eventsQuery.Where(e => e.Date.Date == dateFilter.Value.Date);
+            }
+
+            // Sort functionality
+            switch (sortOrder)
+            {
+                case "title_desc":
+                    eventsQuery = eventsQuery.OrderByDescending(e => e.Title);
+                    break;
+                case "Date":
+                    eventsQuery = eventsQuery.OrderBy(e => e.Date);
+                    break;
+                case "date_desc":
+                    eventsQuery = eventsQuery.OrderByDescending(e => e.Date);
+                    break;
+                case "Location":
+                    eventsQuery = eventsQuery.OrderBy(e => e.Location);
+                    break;
+                case "location_desc":
+                    eventsQuery = eventsQuery.OrderByDescending(e => e.Location);
+                    break;
+                case "CreatedAt":
+                    eventsQuery = eventsQuery.OrderBy(e => e.CreatedAt);
+                    break;
+                case "createdat_desc":
+                    eventsQuery = eventsQuery.OrderByDescending(e => e.CreatedAt);
+                    break;
+                default:
+                    eventsQuery = eventsQuery.OrderBy(e => e.Title);
+                    break;
+            }
+
+            // locations for filter dropdown
+            var locations = await _context.FarmerMarketEvents
+                .Select(e => e.Location)
+                .Distinct()
+                .OrderBy(l => l)
+                .ToListAsync();
+
+            ViewBag.Locations = new SelectList(locations);
+
+            // Apply pagination
+            int pageIndex = pageNumber ?? 1;
+            var paginatedEvents = await PaginatedList<FarmerMarketEvent>.CreateAsync(
+                eventsQuery.AsNoTracking(), pageIndex, PageSize);
+
+            return View(paginatedEvents);
         }
 
-        // GET: FarmerMarketEvents/Details/5
+        // GET: FarmerMarketEvents/Details/
+        // Any authenticated user can view details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,17 +129,18 @@ namespace NZFarmers.Controllers
         }
 
         // GET: FarmerMarketEvents/Create
+        // Only Admins can create events
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: FarmerMarketEvents/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EventID,Title,Location,Date,Description,CreatedAt")] FarmerMarketEvent farmerMarketEvent)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create([Bind("EventID,Title,Location,Date,Description")] FarmerMarketEvent farmerMarketEvent)
         {
             if (ModelState.IsValid)
             {
@@ -67,7 +151,9 @@ namespace NZFarmers.Controllers
             return View(farmerMarketEvent);
         }
 
-        // GET: FarmerMarketEvents/Edit/5
+        // GET: FarmerMarketEvents/Edit
+        // Only Admins can edit events
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -83,11 +169,10 @@ namespace NZFarmers.Controllers
             return View(farmerMarketEvent);
         }
 
-        // POST: FarmerMarketEvents/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: FarmerMarketEvents/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("EventID,Title,Location,Date,Description,CreatedAt")] FarmerMarketEvent farmerMarketEvent)
         {
             if (id != farmerMarketEvent.EventID)
@@ -118,7 +203,9 @@ namespace NZFarmers.Controllers
             return View(farmerMarketEvent);
         }
 
-        // GET: FarmerMarketEvents/Delete/5
+        // GET: FarmerMarketEvents/Delete
+        // Only Admins can delete events
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -136,9 +223,10 @@ namespace NZFarmers.Controllers
             return View(farmerMarketEvent);
         }
 
-        // POST: FarmerMarketEvents/Delete/5
+        // POST: FarmerMarketEvents/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var farmerMarketEvent = await _context.FarmerMarketEvents.FindAsync(id);

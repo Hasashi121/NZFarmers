@@ -420,9 +420,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-    <!-- Add some interactive JavaScript -->
     <script>
-        // Add smooth scrolling and interactive effects
         document.addEventListener('DOMContentLoaded', function() {
             // Add active class to current page
             const currentPath = window.location.pathname;
@@ -435,9 +433,8 @@
                 }
             });
 
-            // Add cart item count (you can replace this with actual cart count)
             const cartBadge = document.querySelector('.cart-badge');
-            // cartBadge.textContent = getCartItemCount(); // Replace with your cart logic
+            cartBadge.textContent = getCartItemCount(); 
         });
     </script>
 

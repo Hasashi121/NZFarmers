@@ -15,12 +15,14 @@ namespace NZFarmers
 
         // Extra info: total item count (optional but useful)
         public int TotalCount { get; private set; }
+        public int PageSize { get; private set; } 
 
         // Constructor: receives items to display, count, current page, and page size
         public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
         {
             PageIndex = pageIndex;
             TotalCount = count;
+            PageSize = pageSize;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
 
             this.AddRange(items);
