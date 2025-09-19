@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NZFarmers.Data;
 
@@ -11,9 +12,11 @@ using NZFarmers.Data;
 namespace NZFarmers.Migrations
 {
     [DbContext(typeof(NZFarmersContext))]
-    partial class NZFarmersContextModelSnapshot : ModelSnapshot
+    [Migration("20250919074227_IssuesFixed")]
+    partial class IssuesFixed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,9 +251,9 @@ namespace NZFarmers.Migrations
                         {
                             Id = "seed-user-1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a4139feb-ba6d-4039-b451-258c92662a2d",
+                            ConcurrencyStamp = "030bcf7f-4001-4259-b508-dc152502e0fa",
                             ContactNumber = "",
-                            CreatedAt = new DateTime(2025, 9, 19, 8, 21, 11, 723, DateTimeKind.Utc).AddTicks(7130),
+                            CreatedAt = new DateTime(2025, 9, 19, 7, 42, 26, 814, DateTimeKind.Utc).AddTicks(2537),
                             Email = "sarah@example.com",
                             EmailConfirmed = true,
                             FirstName = "",
@@ -261,7 +264,7 @@ namespace NZFarmers.Migrations
                             PasswordHash = "PLACEHOLDER_HASH",
                             PhoneNumberConfirmed = false,
                             Role = 2,
-                            SecurityStamp = "b5a00211-a9cb-42fe-af7c-c03fa56ca11f",
+                            SecurityStamp = "ac39f6a8-c6bb-4431-93d0-6494367d2127",
                             TwoFactorEnabled = false,
                             UserName = "sarah@example.com"
                         },
@@ -269,9 +272,9 @@ namespace NZFarmers.Migrations
                         {
                             Id = "seed-user-2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "70ef334e-ce24-4ad9-b20a-c47a25ed9fb6",
+                            ConcurrencyStamp = "f12a5dbc-ed4f-4ad2-931f-5cafe6fb8fb6",
                             ContactNumber = "",
-                            CreatedAt = new DateTime(2025, 9, 19, 8, 21, 11, 723, DateTimeKind.Utc).AddTicks(7221),
+                            CreatedAt = new DateTime(2025, 9, 19, 7, 42, 26, 814, DateTimeKind.Utc).AddTicks(2635),
                             Email = "tom@example.com",
                             EmailConfirmed = true,
                             FirstName = "",
@@ -282,7 +285,7 @@ namespace NZFarmers.Migrations
                             PasswordHash = "PLACEHOLDER_HASH",
                             PhoneNumberConfirmed = false,
                             Role = 2,
-                            SecurityStamp = "f74681e5-b090-4aa9-a4bc-cd5d234734ca",
+                            SecurityStamp = "eebed5fd-11fb-4601-8229-5daf4184eecf",
                             TwoFactorEnabled = false,
                             UserName = "tom@example.com"
                         },
@@ -290,9 +293,9 @@ namespace NZFarmers.Migrations
                         {
                             Id = "seed-user-3",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "247b50bd-aafe-47a8-9f3c-40e1ebd31f99",
+                            ConcurrencyStamp = "5f203b47-65f7-4022-9578-d4a4f8b6b515",
                             ContactNumber = "",
-                            CreatedAt = new DateTime(2025, 9, 19, 8, 21, 11, 723, DateTimeKind.Utc).AddTicks(7275),
+                            CreatedAt = new DateTime(2025, 9, 19, 7, 42, 26, 814, DateTimeKind.Utc).AddTicks(2662),
                             Email = "mike@example.com",
                             EmailConfirmed = true,
                             FirstName = "",
@@ -303,7 +306,7 @@ namespace NZFarmers.Migrations
                             PasswordHash = "PLACEHOLDER_HASH",
                             PhoneNumberConfirmed = false,
                             Role = 2,
-                            SecurityStamp = "e86a0f6e-f7fb-4d6e-8d9b-6078c759dcf9",
+                            SecurityStamp = "08ea6672-96de-4d11-9a64-ec1671bc053c",
                             TwoFactorEnabled = false,
                             UserName = "mike@example.com"
                         },
@@ -311,9 +314,9 @@ namespace NZFarmers.Migrations
                         {
                             Id = "seed-user-4",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "aca012bb-b176-45bd-b058-9692efac82cb",
+                            ConcurrencyStamp = "afd3660d-32e4-4dca-92bc-b7bb0e8c261e",
                             ContactNumber = "",
-                            CreatedAt = new DateTime(2025, 9, 19, 8, 21, 11, 723, DateTimeKind.Utc).AddTicks(7296),
+                            CreatedAt = new DateTime(2025, 9, 19, 7, 42, 26, 814, DateTimeKind.Utc).AddTicks(2682),
                             Email = "jenny@example.com",
                             EmailConfirmed = true,
                             FirstName = "",
@@ -324,7 +327,7 @@ namespace NZFarmers.Migrations
                             PasswordHash = "PLACEHOLDER_HASH",
                             PhoneNumberConfirmed = false,
                             Role = 2,
-                            SecurityStamp = "4ef9a8aa-b154-4dcc-9b4c-ad0dbc6ca1a4",
+                            SecurityStamp = "da699302-d73f-47f5-9ca3-1a3f0a7f14f7",
                             TwoFactorEnabled = false,
                             UserName = "jenny@example.com"
                         },
@@ -332,9 +335,9 @@ namespace NZFarmers.Migrations
                         {
                             Id = "seed-user-5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "57e5133d-3b36-4522-ab76-bd94bff6e1be",
+                            ConcurrencyStamp = "d1dcbd35-233c-472b-88d9-e9fe1c2c28d7",
                             ContactNumber = "",
-                            CreatedAt = new DateTime(2025, 9, 19, 8, 21, 11, 723, DateTimeKind.Utc).AddTicks(7315),
+                            CreatedAt = new DateTime(2025, 9, 19, 7, 42, 26, 814, DateTimeKind.Utc).AddTicks(2700),
                             Email = "david@example.com",
                             EmailConfirmed = true,
                             FirstName = "",
@@ -345,7 +348,7 @@ namespace NZFarmers.Migrations
                             PasswordHash = "PLACEHOLDER_HASH",
                             PhoneNumberConfirmed = false,
                             Role = 2,
-                            SecurityStamp = "c51c054f-97b5-4f54-abb5-7d8e84d67269",
+                            SecurityStamp = "524fa21a-e121-4ef9-bb43-eb24d48c6e8f",
                             TwoFactorEnabled = false,
                             UserName = "david@example.com"
                         },
@@ -353,9 +356,9 @@ namespace NZFarmers.Migrations
                         {
                             Id = "seed-user-6",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "da45b188-4b99-441f-92ad-53af8f4ff297",
+                            ConcurrencyStamp = "82ef1847-3d17-48e9-a14e-ae58fa11eaea",
                             ContactNumber = "",
-                            CreatedAt = new DateTime(2025, 9, 19, 8, 21, 11, 723, DateTimeKind.Utc).AddTicks(7345),
+                            CreatedAt = new DateTime(2025, 9, 19, 7, 42, 26, 814, DateTimeKind.Utc).AddTicks(2720),
                             Email = "anna@example.com",
                             EmailConfirmed = true,
                             FirstName = "",
@@ -366,10 +369,35 @@ namespace NZFarmers.Migrations
                             PasswordHash = "PLACEHOLDER_HASH",
                             PhoneNumberConfirmed = false,
                             Role = 2,
-                            SecurityStamp = "e05234c4-c671-4ebc-b4f1-e1ba093ff79d",
+                            SecurityStamp = "f2ac6537-719a-468a-bacd-90211480161f",
                             TwoFactorEnabled = false,
                             UserName = "anna@example.com"
                         });
+                });
+
+            modelBuilder.Entity("NZFarmers.Models.DeliveryTracking", b =>
+                {
+                    b.Property<int>("TrackingID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TrackingID"));
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("TrackingID");
+
+                    b.HasIndex("OrderID")
+                        .IsUnique();
+
+                    b.ToTable("DeliveryTrackings");
                 });
 
             modelBuilder.Entity("NZFarmers.Models.EducationalContent", b =>
@@ -405,7 +433,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 10,
                             ContentURL = "https://www.mpi.govt.nz/agriculture/sustainable-farming/",
-                            CreatedAt = new DateTime(2025, 8, 20, 8, 21, 11, 723, DateTimeKind.Utc).AddTicks(7723),
+                            CreatedAt = new DateTime(2025, 8, 20, 7, 42, 26, 814, DateTimeKind.Utc).AddTicks(3169),
                             Description = "Learn about eco-friendly farming methods that work best in New Zealand's unique climate and soil conditions. Discover how to reduce environmental impact while maintaining productivity.",
                             Title = "Sustainable Farming Practices for New Zealand"
                         },
@@ -413,7 +441,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 20,
                             ContentURL = "https://www.asurequality.com/our-services/organic-certification/",
-                            CreatedAt = new DateTime(2025, 8, 25, 8, 21, 11, 723, DateTimeKind.Utc).AddTicks(7729),
+                            CreatedAt = new DateTime(2025, 8, 25, 7, 42, 26, 814, DateTimeKind.Utc).AddTicks(3176),
                             Description = "Step-by-step guide to obtaining organic certification for your farm products. Understand the requirements, documentation needed, and benefits of organic farming.",
                             Title = "Organic Certification Guide"
                         },
@@ -421,7 +449,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 30,
                             ContentURL = "https://www.landcareresearch.co.nz/discover-our-research/environment/soils/",
-                            CreatedAt = new DateTime(2025, 8, 30, 8, 21, 11, 723, DateTimeKind.Utc).AddTicks(7730),
+                            CreatedAt = new DateTime(2025, 8, 30, 7, 42, 26, 814, DateTimeKind.Utc).AddTicks(3177),
                             Description = "Essential tips for maintaining healthy soil and optimizing nutrient levels. Learn about composting, crop rotation, and natural fertilizers.",
                             Title = "Soil Health and Nutrition Management"
                         },
@@ -429,7 +457,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 40,
                             ContentURL = "https://www.niwa.co.nz/agriculture/irrigation",
-                            CreatedAt = new DateTime(2025, 9, 1, 8, 21, 11, 723, DateTimeKind.Utc).AddTicks(7732),
+                            CreatedAt = new DateTime(2025, 9, 1, 7, 42, 26, 814, DateTimeKind.Utc).AddTicks(3179),
                             Description = "Effective strategies for water management and conservation on your farm. Discover irrigation techniques that save water while maximizing crop yield.",
                             Title = "Water Conservation in Agriculture"
                         },
@@ -437,7 +465,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 50,
                             ContentURL = "https://www.plantandfood.co.nz/page/agriculture/pest-management/",
-                            CreatedAt = new DateTime(2025, 9, 4, 8, 21, 11, 723, DateTimeKind.Utc).AddTicks(7733),
+                            CreatedAt = new DateTime(2025, 9, 4, 7, 42, 26, 814, DateTimeKind.Utc).AddTicks(3180),
                             Description = "Integrated pest management strategies that protect your crops naturally. Learn to identify common pests and diseases affecting New Zealand farms.",
                             Title = "Pest and Disease Management"
                         },
@@ -445,7 +473,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 60,
                             ContentURL = "https://www.mpi.govt.nz/agriculture/climate-change/",
-                            CreatedAt = new DateTime(2025, 9, 7, 8, 21, 11, 723, DateTimeKind.Utc).AddTicks(7734),
+                            CreatedAt = new DateTime(2025, 9, 7, 7, 42, 26, 814, DateTimeKind.Utc).AddTicks(3181),
                             Description = "Prepare your farm for changing weather patterns and extreme events. Strategies for building resilience and adapting to climate variability.",
                             Title = "Climate Change Adaptation for Farmers"
                         },
@@ -453,7 +481,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 70,
                             ContentURL = "https://www.marketgardening.co.nz/direct-marketing/",
-                            CreatedAt = new DateTime(2025, 9, 9, 8, 21, 11, 723, DateTimeKind.Utc).AddTicks(7736),
+                            CreatedAt = new DateTime(2025, 9, 9, 7, 42, 26, 814, DateTimeKind.Utc).AddTicks(3183),
                             Description = "Learn how to sell directly to consumers and restaurants. Build relationships with local buyers and maximize your profit margins through direct sales.",
                             Title = "Direct Marketing and Farm-to-Table Sales"
                         },
@@ -461,7 +489,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 80,
                             ContentURL = "https://www.gardening.co.nz/vegetables/planting-calendar/",
-                            CreatedAt = new DateTime(2025, 9, 11, 8, 21, 11, 723, DateTimeKind.Utc).AddTicks(7737),
+                            CreatedAt = new DateTime(2025, 9, 11, 7, 42, 26, 814, DateTimeKind.Utc).AddTicks(3185),
                             Description = "Month-by-month guide to planting vegetables and fruits in New Zealand. Optimize your growing seasons and plan for year-round production.",
                             Title = "Seasonal Planting Calendar for NZ"
                         },
@@ -469,7 +497,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 90,
                             ContentURL = "https://www.worksafe.govt.nz/topic-and-industry/agriculture/",
-                            CreatedAt = new DateTime(2025, 9, 14, 8, 21, 11, 723, DateTimeKind.Utc).AddTicks(7739),
+                            CreatedAt = new DateTime(2025, 9, 14, 7, 42, 26, 814, DateTimeKind.Utc).AddTicks(3187),
                             Description = "Essential safety practices and risk management strategies for farm operations. Protect yourself, your workers, and your property.",
                             Title = "Farm Safety and Risk Management"
                         },
@@ -477,7 +505,7 @@ namespace NZFarmers.Migrations
                         {
                             ContentID = 100,
                             ContentURL = "https://www.agritech.org.nz/resources/",
-                            CreatedAt = new DateTime(2025, 9, 16, 8, 21, 11, 723, DateTimeKind.Utc).AddTicks(7741),
+                            CreatedAt = new DateTime(2025, 9, 16, 7, 42, 26, 814, DateTimeKind.Utc).AddTicks(3188),
                             Description = "Explore how technology can improve farm efficiency and productivity. From GPS tractors to soil sensors, discover the latest agricultural innovations.",
                             Title = "Technology in Modern Farming"
                         });
@@ -623,6 +651,109 @@ namespace NZFarmers.Migrations
                             Description = "Wild foods, foraged ingredients, and adventure cuisine from the West Coast.",
                             Location = "Greymouth Civic Centre, West Coast",
                             Title = "West Coast Wild Foods Market"
+                        });
+                });
+
+            modelBuilder.Entity("NZFarmers.Models.FarmerMarketParticipation", b =>
+                {
+                    b.Property<int>("FarmerID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EventID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("FarmerMarketsEventID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ParticipationID")
+                        .HasColumnType("int");
+
+                    b.HasKey("FarmerID", "EventID");
+
+                    b.HasIndex("EventID");
+
+                    b.HasIndex("FarmerMarketsEventID");
+
+                    b.ToTable("FarmerMarketParticipations");
+                });
+
+            modelBuilder.Entity("NZFarmers.Models.FarmerMarkets", b =>
+                {
+                    b.Property<int>("EventID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EventID"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("EventID");
+
+                    b.ToTable("FarmerMarkets");
+
+                    b.HasData(
+                        new
+                        {
+                            EventID = 1,
+                            CreatedAt = new DateTime(2024, 8, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2024, 9, 14, 8, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Seasonal produce, artisan breads, and live folk music from local performers.",
+                            Location = "Claudelands Event Centre, Hamilton",
+                            Title = "Hamilton Harvest Fair"
+                        },
+                        new
+                        {
+                            EventID = 2,
+                            CreatedAt = new DateTime(2024, 8, 5, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2024, 10, 5, 9, 30, 0, 0, DateTimeKind.Utc),
+                            Description = "Celebrate spring with organic vegetables, flowers, and children's workshops.",
+                            Location = "Cathedral Square, Christchurch",
+                            Title = "Christchurch Spring Market"
+                        },
+                        new
+                        {
+                            EventID = 3,
+                            CreatedAt = new DateTime(2024, 8, 10, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2024, 11, 2, 7, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Farm-to-table tastings featuring coastal seafood and fresh dairy selections.",
+                            Location = "Wellington Waterfront, Wellington",
+                            Title = "Wellington Waterfront Farmers"
+                        },
+                        new
+                        {
+                            EventID = 4,
+                            CreatedAt = new DateTime(2024, 8, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2024, 12, 7, 9, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Handmade preserves, cheeses, and cooking demos by local chefs.",
+                            Location = "Octagon Square, Dunedin",
+                            Title = "Otago Artisan Market"
+                        },
+                        new
+                        {
+                            EventID = 5,
+                            CreatedAt = new DateTime(2024, 8, 20, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Date = new DateTime(2024, 9, 28, 16, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Evening market with gourmet street food, live DJs, and seasonal fruit stalls.",
+                            Location = "Silo Park, Auckland",
+                            Title = "Auckland Night Farmers Market"
                         });
                 });
 
@@ -1394,6 +1525,40 @@ namespace NZFarmers.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("NZFarmers.Models.DeliveryTracking", b =>
+                {
+                    b.HasOne("Order", "Order")
+                        .WithOne("DeliveryTracking")
+                        .HasForeignKey("NZFarmers.Models.DeliveryTracking", "OrderID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("NZFarmers.Models.FarmerMarketParticipation", b =>
+                {
+                    b.HasOne("NZFarmers.Models.FarmerMarketEvent", "FarmerMarketEvent")
+                        .WithMany("FarmerMarketParticipations")
+                        .HasForeignKey("EventID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NZFarmers.Models.Farmers", "Farmer")
+                        .WithMany("FarmerMarketParticipations")
+                        .HasForeignKey("FarmerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NZFarmers.Models.FarmerMarkets", null)
+                        .WithMany("FarmerMarketParticipations")
+                        .HasForeignKey("FarmerMarketsEventID");
+
+                    b.Navigation("Farmer");
+
+                    b.Navigation("FarmerMarketEvent");
+                });
+
             modelBuilder.Entity("NZFarmers.Models.FarmerProduct", b =>
                 {
                     b.HasOne("NZFarmers.Models.Farmers", "Farmer")
@@ -1508,6 +1673,16 @@ namespace NZFarmers.Migrations
                     b.Navigation("Ratings");
                 });
 
+            modelBuilder.Entity("NZFarmers.Models.FarmerMarketEvent", b =>
+                {
+                    b.Navigation("FarmerMarketParticipations");
+                });
+
+            modelBuilder.Entity("NZFarmers.Models.FarmerMarkets", b =>
+                {
+                    b.Navigation("FarmerMarketParticipations");
+                });
+
             modelBuilder.Entity("NZFarmers.Models.FarmerProduct", b =>
                 {
                     b.Navigation("OrderDetails");
@@ -1517,6 +1692,8 @@ namespace NZFarmers.Migrations
 
             modelBuilder.Entity("NZFarmers.Models.Farmers", b =>
                 {
+                    b.Navigation("FarmerMarketParticipations");
+
                     b.Navigation("FarmerProducts");
 
                     b.Navigation("Ratings");
@@ -1524,6 +1701,8 @@ namespace NZFarmers.Migrations
 
             modelBuilder.Entity("Order", b =>
                 {
+                    b.Navigation("DeliveryTracking");
+
                     b.Navigation("OrderDetails");
                 });
 #pragma warning restore 612, 618

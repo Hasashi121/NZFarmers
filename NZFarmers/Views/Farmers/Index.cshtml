@@ -1,132 +1,397 @@
 ﻿@model NZFarmers.PaginatedList<NZFarmers.Models.Farmers>
 @{
-    ViewData["Title"] = "Farmers";
-    var nameSort = ViewData["NameSortParm"] as string;
-    var citySort = ViewData["CitySortParm"] as string;
-    var regionSort = ViewData["RegionSortParm"] as string;
+    ViewData["Title"] = "NZ Farmers Directory";
 }
 
+<div class="farmers-page">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="hero-inner">
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        <i class="fas fa-leaf"></i> NZ Farmers Directory
+                    </h1>
+                    <p class="hero-subtitle">Fresh from our farms to your table - Supporting local New Zealand farmers</p>
+                </div>
+                <div class="hero-actions">
+                    @if (User.IsInRole("Admin") || User.IsInRole("Farmer"))
+                    {
+                        <a asp-action="Create" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus"></i> Add New Farm
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="search-section">
+        <div class="search-content">
+            <div class="search-card">
+                <form asp-action="Index" method="get">
+                    <div class="search-grid">
+                        <div class="search-field">
+                            <label for="searchString" class="form-label">Search Farmers</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="searchString"
+                                   name="searchString"
+                                   value="@ViewData["CurrentFilter"]"
+                                   placeholder="Search by farm name, city, region, or address...">
+                        </div>
+                        <div class="search-field">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-success btn-search">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sorting Controls -->
+    <div class="sorting-section">
+        <div class="sorting-content">
+            <div class="sorting-card">
+                <span class="sort-label">Sort by:</span>
+                <div class="sort-buttons">
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["NameSortParm"]"
+                       asp-route-searchString="@ViewData["CurrentFilter"]"
+                       class="sort-link">
+                        <i class="fas fa-tractor"></i> Farm Name
+                    </a>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["CitySortParm"]"
+                       asp-route-searchString="@ViewData["CurrentFilter"]"
+                       class="sort-link">
+                        <i class="fas fa-city"></i> City
+                    </a>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["RegionSortParm"]"
+                       asp-route-searchString="@ViewData["CurrentFilter"]"
+                       class="sort-link">
+                        <i class="fas fa-map-marker-alt"></i> Region
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Farmers Grid -->
+    <div class="farmers-section">
+        <div class="farmers-content">
+            @if (Model.Any())
+            {
+                <div class="farmers-grid">
+                    @foreach (var farmer in Model)
+                    {
+                        <div class="farmer-item">
+                            <div class="farmer-card">
+                                <div class="card-header">
+                                    <div class="farm-info">
+                                        <h3 class="farm-name">@farmer.FarmName</h3>
+                                        <p class="location">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            @farmer.City, @farmer.Region
+                                        </p>
+                                    </div>
+                                    <div class="profile-image-container">
+                                        @if (!string.IsNullOrEmpty(farmer.ProfileImage))
+                                        {
+                                            <img src="@farmer.ProfileImage" alt="@farmer.FarmName Profile" class="profile-image" />
+                                        }
+                                        else
+                                        {
+                                            <div class="no-image">
+                                                <i class="fas fa-user-tie"></i>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    @if (!string.IsNullOrEmpty(farmer.Description))
+                                    {
+                                        <p class="description">
+                                            @(farmer.Description.Length > 120 ? farmer.Description.Substring(0, 120) + "..." : farmer.Description)
+                                        </p>
+                                    }
+
+                                    <div class="contact-info">
+                                        @if (!string.IsNullOrEmpty(farmer.PhoneNumber))
+                                        {
+                                            <div class="info-item">
+                                                <i class="fas fa-phone info-icon"></i>
+                                                <span class="info-text">@farmer.PhoneNumber</span>
+                                            </div>
+                                        }
+
+                                        @if (!string.IsNullOrEmpty(farmer.Address))
+                                        {
+                                            <div class="info-item">
+                                                <i class="fas fa-home info-icon"></i>
+                                                <span class="info-text">@farmer.Address</span>
+                                            </div>
+                                        }
+
+                                        @if (!string.IsNullOrEmpty(farmer.ZipCode))
+                                        {
+                                            <div class="info-item">
+                                                <i class="fas fa-mail-bulk info-icon"></i>
+                                                <span class="info-text">@farmer.ZipCode</span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="card-actions">
+                                    <!-- View Details (available to everyone) -->
+                                    <a asp-action="Details" asp-route-id="@farmer.FarmerID" class="btn btn-outline-primary">
+                                        <i class="fas fa-eye"></i> View Details
+                                    </a>
+
+                                    <a asp-controller="FarmerProducts" asp-action="Index" asp-route-searchString="@farmer.FarmName" class="btn btn-outline-success">
+                                        <i class="fas fa-seedling"></i> View Products
+                                    </a>
+
+                                    <!-- Admin/Farmer Controls -->
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Farmer"))
+                                    {
+                                        <div class="admin-actions">
+                                            <a asp-action="Edit" asp-route-id="@farmer.FarmerID" class="btn btn-outline-secondary btn-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@farmer.FarmerID" class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-wrapper">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            @if (Model.HasPreviousPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       asp-action="Index"
+                                       asp-route-page="@(Model.PageIndex - 1)"
+                                       asp-route-searchString="@ViewData["CurrentFilter"]"
+                                       asp-route-sortOrder="@ViewData["CurrentSort"]">
+                                        <i class="fas fa-chevron-left"></i> Previous
+                                    </a>
+                                </li>
+                            }
+
+                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                                    <a class="page-link"
+                                       asp-action="Index"
+                                       asp-route-page="@i"
+                                       asp-route-searchString="@ViewData["CurrentFilter"]"
+                                       asp-route-sortOrder="@ViewData["CurrentSort"]">
+                                        @i
+                                    </a>
+                                </li>
+                            }
+
+                            @if (Model.HasNextPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       asp-action="Index"
+                                       asp-route-page="@(Model.PageIndex + 1)"
+                                       asp-route-searchString="@ViewData["CurrentFilter"]"
+                                       asp-route-sortOrder="@ViewData["CurrentSort"]">
+                                        Next <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+
+                    <div class="pagination-info">
+                        Showing page @Model.PageIndex of @Model.TotalPages
+                        (@Model.Count() farmers on this page)
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-tractor"></i>
+                    </div>
+                    <h3>No Farmers Found</h3>
+                    <p>No farmers match your search criteria. Try adjusting your search terms.</p>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Farmer"))
+                    {
+                        <a asp-action="Create" class="btn btn-primary">Add First Farmer</a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
 <style>
-    .farmers-header {
+    .farmers-page {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 100vh;
+        width: 100%;
+    }
+
+    .hero-section {
         background: linear-gradient(rgba(30, 138, 62, 0.4), rgba(30, 138, 62, 0.4)), url('/uploads/YouTube Banner - Farmers Of New Zealand.png');
         background-size: cover;
         background-position: center center;
         background-repeat: no-repeat;
         color: white;
-        padding: 6rem 0 4rem 0;
-        margin: 0;
-        text-align: center;
-        border-radius: 0;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        min-height: 80vh;
+        padding: 80px 0;
+        margin-bottom: 40px;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        min-height: 70vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        position: relative;
+    }
+
+    .hero-content {
+        width: 100%;
+        padding: 0 2rem;
+    }
+
+    .hero-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 2rem;
+    }
+
+    .hero-text {
+        flex: 1;
+        text-align: center;
+    }
+
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+        letter-spacing: -1px;
+    }
+
+        .hero-title i {
+            margin-right: 1rem;
+        }
+
+    .hero-subtitle {
+        font-size: 1.4rem;
+        opacity: 0.95;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        font-weight: 300;
+        margin: 0;
+    }
+
+    .hero-actions {
+        flex-shrink: 0;
+    }
+
+    .search-section {
+        padding: 0 0 40px 0;
         width: 100vw;
         margin-left: calc(-50vw + 50%);
     }
 
-        .farmers-header h1 {
-            font-size: 4rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
-            letter-spacing: -1px;
-        }
-
-    .header-subtitle {
-        font-size: 1.4rem;
-        opacity: 0.95;
-        margin-top: 10px;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-        font-weight: 300;
-        margin-bottom: 2.5rem;
+    .search-content {
+        width: 100%;
+        padding: 0 2rem;
     }
 
-    .search-section {
+    .search-card {
         background: white;
-        padding: 30px;
         border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        margin-bottom: 30px;
-        margin-top: 2rem;
-        position: relative;
-        z-index: 2;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        max-width: 1400px;
+        margin: 0 auto;
     }
 
-    .search-form {
+    .search-grid {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 1.5rem;
+        align-items: end;
+    }
+
+    .search-field {
         display: flex;
-        gap: 1rem;
-        align-items: center;
-        flex-wrap: wrap;
+        flex-direction: column;
     }
 
-    .search-input {
-        flex: 1;
-        min-width: 300px;
-        padding: 0.75rem 1rem;
-        border: 2px solid #e1e5e9;
-        border-radius: 25px;
+    .form-label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: #2d3748;
+    }
+
+    .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 12px 15px;
         font-size: 1rem;
         transition: all 0.3s ease;
     }
 
-        .search-input:focus {
-            outline: none;
+        .form-control:focus {
             border-color: #1e8a3e;
             box-shadow: 0 0 0 3px rgba(30, 138, 62, 0.1);
+            outline: none;
         }
 
     .btn-search {
-        background: linear-gradient(135deg, #1e8a3e 0%, #25a244 100%);
-        border: none;
-        padding: 0.75rem 2rem;
-        border-radius: 25px;
-        color: white;
+        height: 48px;
+        padding: 0 24px;
+        border-radius: 8px;
         font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(30, 138, 62, 0.3);
+        white-space: nowrap;
     }
 
-        .btn-search:hover {
-            background: linear-gradient(135deg, #176e31, #1e7a33);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(30, 138, 62, 0.4);
-            color: white;
-        }
-
-    .btn-create {
-        background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
-        border: none;
-        padding: 0.75rem 2rem;
-        border-radius: 25px;
-        color: white;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-block;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
-        margin-bottom: 2rem;
+    .sorting-section {
+        padding: 0 0 30px 0;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
     }
 
-        .btn-create:hover {
-            background: linear-gradient(135deg, #e55a2b, #e57a38);
-            color: white;
-            text-decoration: none;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
-        }
+    .sorting-content {
+        width: 100%;
+        padding: 0 2rem;
+    }
 
-    .sorting-controls {
+    .sorting-card {
         background: white;
-        padding: 1rem 1.5rem;
+        padding: 20px 30px;
         border-radius: 15px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        margin-bottom: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
         display: flex;
         gap: 1rem;
         flex-wrap: wrap;
@@ -139,6 +404,12 @@
         margin-right: 0.5rem;
     }
 
+    .sort-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
     .sort-link {
         padding: 0.5rem 1rem;
         background: #f8f9fa;
@@ -148,6 +419,9 @@
         text-decoration: none;
         transition: all 0.3s ease;
         font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
         .sort-link:hover {
@@ -157,53 +431,77 @@
             transform: translateY(-1px);
         }
 
+    .farmers-section {
+        padding: 0 0 60px 0;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+    }
+
+    .farmers-content {
+        width: 100%;
+        padding: 0 2rem;
+    }
+
     .farmers-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-        margin-bottom: 3rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .farmer-item {
+        width: 100%;
     }
 
     .farmer-card {
         background: white;
         border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         transition: all 0.3s ease;
-        border: 1px solid #f0f0f0;
+        height: 100%;
         display: flex;
-        flex-direction: row;
-        align-items: stretch;
-        min-height: 200px;
+        flex-direction: column;
+        overflow: hidden;
     }
 
         .farmer-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
         }
 
     .card-header {
         background: linear-gradient(135deg, #1e8a3e 0%, #25a244 100%);
         color: white;
         padding: 1.5rem;
-        text-align: center;
-        position: relative;
-        min-width: 250px;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
+    }
+
+    .farm-info {
+        flex: 1;
     }
 
     .farm-name {
         font-size: 1.4rem;
         font-weight: 700;
-        margin: 0;
+        margin: 0 0 0.5rem 0;
         text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
+    .location {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+        .location i {
+            margin-right: 0.5rem;
+        }
+
     .profile-image-container {
-        margin-top: 1rem;
+        flex-shrink: 0;
     }
 
     .profile-image {
@@ -223,12 +521,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.8rem;
-        border: 2px solid rgba(255,255,255,0.3);
+        font-size: 1.5rem;
+        border: 4px solid rgba(255,255,255,0.3);
     }
 
     .card-body {
         padding: 1.5rem;
+        flex-grow: 1;
     }
 
     .description {
@@ -236,10 +535,6 @@
         font-size: 0.95rem;
         line-height: 1.5;
         margin-bottom: 1.5rem;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
     }
 
     .contact-info {
@@ -255,7 +550,6 @@
 
     .info-icon {
         width: 18px;
-        height: 18px;
         margin-right: 0.75rem;
         color: #1e8a3e;
         flex-shrink: 0;
@@ -271,64 +565,59 @@
         display: flex;
         gap: 0.5rem;
         flex-wrap: wrap;
+        align-items: center;
     }
 
-    .action-btn {
-        flex: 1;
-        padding: 0.6rem 1rem;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        text-decoration: none;
-        text-align: center;
-        font-size: 0.85rem;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        min-width: 70px;
-    }
-
-    .btn-edit {
-        background: #ff6b35;
-        color: white;
-        border-color: #ff6b35;
-    }
-
-        .btn-edit:hover {
-            background: #e55a2b;
-            color: white;
-            text-decoration: none;
-            transform: translateY(-1px);
-        }
-
-    .btn-details {
-        background: #1e8a3e;
-        color: white;
-        border-color: #1e8a3e;
-    }
-
-        .btn-details:hover {
-            background: #176e31;
-            color: white;
-            text-decoration: none;
-            transform: translateY(-1px);
-        }
-
-    .btn-delete {
-        background: #dc3545;
-        color: white;
-        border-color: #dc3545;
-    }
-
-        .btn-delete:hover {
-            background: #c82333;
-            color: white;
-            text-decoration: none;
-            transform: translateY(-1px);
-        }
-
-    .pagination-wrapper {
+    .admin-actions {
         display: flex;
-        justify-content: center;
-        margin-top: 3rem;
+        gap: 8px;
+        margin-left: auto;
+    }
+
+        .admin-actions .btn {
+            width: 35px;
+            height: 35px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .empty-icon {
+        font-size: 80px;
+        color: #e2e8f0;
+        margin-bottom: 30px;
+    }
+
+    .empty-state h3 {
+        color: #2d3748;
+        margin-bottom: 15px;
+    }
+
+    .empty-state p {
+        color: #718096;
+        margin-bottom: 30px;
+    }
+
+    /* Pagination Styles */
+    .pagination-wrapper {
+        margin-top: 40px;
+        text-align: center;
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0 2rem;
     }
 
     .pagination {
@@ -337,6 +626,8 @@
         padding: 0.5rem;
         box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         border: 1px solid #f0f0f0;
+        display: inline-flex;
+        margin-bottom: 1rem;
     }
 
     .page-item .page-link {
@@ -347,6 +638,9 @@
         color: #495057;
         transition: all 0.3s ease;
         text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
     .page-item.active .page-link {
@@ -362,192 +656,114 @@
         text-decoration: none;
     }
 
-
-    .farmers-header {
-        min-height: 60vh;
-        padding: 4rem 0 3rem 0;
+    .page-item.active .page-link:hover {
+        background: linear-gradient(135deg, #176e31, #1e7a33);
+        color: white;
+        transform: translateY(-1px);
     }
 
-        .farmers-header h1 {
+    .pagination-info {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-top: 1rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        color: white;
+        text-decoration: none;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #e55a2b, #e57a38);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-success {
+        background: linear-gradient(135deg, #1e8a3e 0%, #25a244 100%);
+        border: none;
+        color: white;
+    }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #176e31, #1e7a33);
+        }
+
+    /* Responsive Design */
+    @@media (max-width: 1200px) {
+        .search-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .farmers-grid {
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        }
+
+        .sort-buttons {
+            justify-content: center;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .hero-inner {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .hero-title {
             font-size: 2.5rem;
         }
 
-    .header-subtitle {
-        font-size: 1.1rem;
-        padding: 0 15px;
-    }
+        .hero-subtitle {
+            font-size: 1.1rem;
+            padding: 0 15px;
+        }
 
-    .farmers-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
+        .farmers-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
 
-    .search-form {
-        flex-direction: column;
-        align-items: stretch;
-    }
+        .card-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
 
-    .search-input {
-        min-width: auto;
-    }
+        .farm-info {
+            text-align: center;
+        }
 
-    .sorting-controls {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+        .card-actions {
+            flex-direction: column;
+            gap: 15px;
+        }
 
-    .card-actions {
-        flex-direction: column;
-    }
+        .admin-actions {
+            margin-left: 0;
+            justify-content: center;
+        }
 
-    .action-btn {
-        min-width: auto;
-    }
+        .hero-content,
+        .search-content,
+        .sorting-content,
+        .farmers-content {
+            padding: 0 1rem;
+        }
 
+        .sorting-card {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
     }
 </style>
-
-<div class="farmers-header">
-    <div class="container">
-        <div class="hero-content">
-            <h1><i class="fas fa-leaf me-3"></i>🌾 NZ Farmers Directory</h1>
-            <p class="header-subtitle">Fresh from our farms to your table - Supporting local New Zealand farmers</p>
-            <a href="#farmers-section" class="btn-search" style="display: inline-block; margin-top: 1rem; text-decoration: none;">
-                <i class="fas fa-users me-2"></i>Explore Farmers
-            </a>
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <!-- Search Section -->
-    <div class="search-section" id="farmers-section">
-        <form asp-action="Index" method="get" class="search-form">
-            <input type="text" name="searchString" class="search-input"
-                   placeholder="🔍 Search by farm name, city, region..." value="@ViewData["CurrentFilter"]" />
-            <button type="submit" class="btn btn-search">Search</button>
-        </form>
-    </div>
-
-    <!-- Create New Button -->
-    <div class="text-center">
-        <a asp-action="Create" class="btn-create">
-            <i class="fas fa-plus me-2"></i>✨ Add New Farm
-        </a>
-    </div>
-
-    <!-- Sorting Controls -->
-    <div class="sorting-controls">
-        <span class="sort-label">Sort by:</span>
-        <a asp-action="Index" asp-route-sortOrder="@nameSort" class="sort-link">
-            <i class="fas fa-tractor me-1"></i>📝 Farm Name
-        </a>
-        <a asp-action="Index" asp-route-sortOrder="@citySort" class="sort-link">
-            <i class="fas fa-city me-1"></i>🏙️ City
-        </a>
-        <a asp-action="Index" asp-route-sortOrder="@regionSort" class="sort-link">
-            <i class="fas fa-map-marker-alt me-1"></i>📍 Region
-        </a>
-    </div>
-
-    <!-- Farmers Grid -->
-    <div class="farmers-grid">
-        @foreach (var farmer in Model)
-        {
-            <div class="farmer-card">
-                <div class="card-header">
-                    <h3 class="farm-name">@farmer.FarmName</h3>
-                    <div class="profile-image-container">
-                        @if (!string.IsNullOrEmpty(farmer.ProfileImage))
-                        {
-                            <img src="@farmer.ProfileImage" alt="@farmer.FarmName Profile" class="profile-image" />
-                        }
-                        else
-                        {
-                            <div class="no-image">
-                                <i class="fas fa-user-tie" style="font-size: 1.5rem;"></i>
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    @if (!string.IsNullOrEmpty(farmer.Description))
-                    {
-                        <p class="description">@farmer.Description</p>
-                    }
-
-                    <div class="contact-info">
-                        @if (!string.IsNullOrEmpty(farmer.PhoneNumber))
-                        {
-                            <div class="info-item">
-                                <span class="info-icon"><i class="fas fa-phone"></i></span>
-                                <span class="info-text">@farmer.PhoneNumber</span>
-                            </div>
-                        }
-
-                        @if (!string.IsNullOrEmpty(farmer.Address))
-                        {
-                            <div class="info-item">
-                                <span class="info-icon"><i class="fas fa-home"></i></span>
-                                <span class="info-text">@farmer.Address</span>
-                            </div>
-                        }
-
-                        @if (!string.IsNullOrEmpty(farmer.City))
-                        {
-                            <div class="info-item">
-                                <span class="info-icon"><i class="fas fa-map-marker-alt"></i></span>
-                                <span class="info-text">@farmer.City, @farmer.Region</span>
-                            </div>
-                        }
-
-                        @if (!string.IsNullOrEmpty(farmer.ZipCode))
-                        {
-                            <div class="info-item">
-                                <span class="info-icon"><i class="fas fa-mail-bulk"></i></span>
-                                <span class="info-text">@farmer.ZipCode</span>
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                <div class="card-actions">
-                    <a asp-action="Edit" asp-route-id="@farmer.FarmerID" class="action-btn btn-edit">Edit</a>
-                    <a asp-action="Details" asp-route-id="@farmer.FarmerID" class="action-btn btn-details">Details</a>
-                    <a asp-action="Delete" asp-route-id="@farmer.FarmerID" class="action-btn btn-delete">Delete</a>
-                </div>
-            </div>
-        }
-    </div>
-
-    <!-- Pagination -->
-    <div class="pagination-wrapper">
-        <nav>
-            <ul class="pagination">
-                @if (Model.HasPreviousPage)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="?page=@(Model.PageIndex - 1)&searchString=@ViewData["CurrentFilter"]&sortOrder=@ViewData["CurrentSort"]">
-                            ← Previous
-                        </a>
-                    </li>
-                }
-                @for (int i = 1; i <= Model.TotalPages; i++)
-                {
-                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
-                        <a class="page-link" href="?page=@i&searchString=@ViewData["CurrentFilter"]&sortOrder=@ViewData["CurrentSort"]">@i</a>
-                    </li>
-                }
-                @if (Model.HasNextPage)
-                {
-                    <li class="page-item">
-                        <a class="page-link" href="?page=@(Model.PageIndex + 1)&searchString=@ViewData["CurrentFilter"]&sortOrder=@ViewData["CurrentSort"]">
-                            Next →
-                        </a>
-                    </li>
-                }
-            </ul>
-        </nav>
-    </div>
-</div>

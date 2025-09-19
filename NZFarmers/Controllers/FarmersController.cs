@@ -28,9 +28,10 @@ namespace NZFarmers.Controllers
         }
 
         // GET: Farmers
+        // Anyone can view the farmers directory
         public async Task<IActionResult> Index(string searchString, string sortOrder, int page = 1)
         {
-            int pageSize = 10; // Show 10 farmers per page (you can change this)
+            int pageSize = 10; // Show 10 farmers per page
             ViewData["CurrentFilter"] = searchString;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["CitySortParm"] = sortOrder == "City" ? "city_desc" : "City";
@@ -62,8 +63,8 @@ namespace NZFarmers.Controllers
             return View(paginatedFarmers);
         }
 
-
         // GET: Farmers/Details/5
+        // Anyone can view farmer details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -77,6 +78,8 @@ namespace NZFarmers.Controllers
         }
 
         // GET: Farmers/Create
+        // Only Farmers and Admins can create farmer profiles
+        [Authorize(Roles = "Admin,Farmer")]
         public async Task<IActionResult> Create()
         {
             // Ensure the user is logged in
@@ -98,6 +101,7 @@ namespace NZFarmers.Controllers
         // POST: Farmers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Farmer")]
         public async Task<IActionResult> Create([Bind("FarmName,Description,PhoneNumber,ProfileImage,ProfileImageFile,Address,City,Region,ZipCode")] Farmers farmer)
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -107,7 +111,7 @@ namespace NZFarmers.Controllers
             }
             farmer.UserID = currentUser.Id;
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 // Handle file upload
                 if (farmer.ProfileImageFile != null && farmer.ProfileImageFile.Length > 0)
@@ -137,6 +141,8 @@ namespace NZFarmers.Controllers
         }
 
         // GET: Farmers/Edit/5
+        // Only Farmers and Admins can edit farmer profiles
+        [Authorize(Roles = "Admin,Farmer")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -150,6 +156,7 @@ namespace NZFarmers.Controllers
         // POST: Farmers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Farmer")]
         public async Task<IActionResult> Edit(int id, [Bind("FarmerID,FarmName,Description,PhoneNumber,ProfileImage,ProfileImageFile,Address,City,Region,ZipCode")] Farmers farmer)
         {
             if (id != farmer.FarmerID) return NotFound();
@@ -162,7 +169,7 @@ namespace NZFarmers.Controllers
             // Keep the same user ID
             farmer.UserID = user.Id;
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 // If a new file was uploaded, overwrite the old image
                 if (farmer.ProfileImageFile != null && farmer.ProfileImageFile.Length > 0)
@@ -204,6 +211,8 @@ namespace NZFarmers.Controllers
         }
 
         // GET: Farmers/Delete/5
+        // Only Farmers and Admins can delete farmer profiles
+        [Authorize(Roles = "Admin,Farmer")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -219,6 +228,7 @@ namespace NZFarmers.Controllers
         // POST: Farmers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Farmer")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var farmer = await _context.Farmers.FindAsync(id);
@@ -236,6 +246,7 @@ namespace NZFarmers.Controllers
         }
 
         // GET: Farmers/DetailsWithProducts/5
+        // Anyone can view farmer details with products
         public async Task<IActionResult> DetailsWithProducts(int? id)
         {
             if (id == null) return NotFound();
@@ -249,6 +260,5 @@ namespace NZFarmers.Controllers
 
             return View("DetailsWithProducts", farmer);
         }
-
     }
 }

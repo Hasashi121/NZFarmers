@@ -66,7 +66,5 @@ namespace NZFarmers.Models
         // A farmer can receive multiple ratings
         public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
 
-        // A farmer can participate in multiple farmer market events
-        public virtual ICollection<FarmerMarketParticipation> FarmerMarketParticipations { get; set; } = new List<FarmerMarketParticipation>();
     }
 }

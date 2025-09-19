@@ -37,6 +37,4 @@ public class Order
     // Collection of OrderDetail items related to this order
     public virtual ICollection<OrderDetail>? OrderDetails { get; set; } = new List<OrderDetail>();
 
-    // Optional: Each order can have a delivery tracking record
-    public virtual DeliveryTracking? DeliveryTracking { get; set; }
 }

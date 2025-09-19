@@ -1,59 +1,434 @@
 ﻿@model IEnumerable<NZFarmers.Models.Rating>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Farmer Ratings & Reviews";
 }
 
-<h1>Index</h1>
+<div class="ratings-page">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="hero-inner">
+                <div class="hero-text">
+                    <h1 class="hero-title">Farmer Ratings & Reviews</h1>
+                    <p class="hero-subtitle">See what customers are saying about our local farmers</p>
+                </div>
+                <div class="hero-actions">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a asp-action="Create" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus"></i> Add Review
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Farmer)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RatingValue)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Comment)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Farmer.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RatingValue)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Comment)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.RatingID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.RatingID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.RatingID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <!-- Ratings Content -->
+    <div class="ratings-section">
+        <div class="ratings-content">
+            @if (Model.Any())
+            {
+                <div class="ratings-grid">
+                    @foreach (var rating in Model)
+                    {
+                        <div class="rating-card">
+                            <div class="card-header">
+                                <div class="user-info">
+                                    <div class="user-avatar">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="user-details">
+                                        <h6 class="user-name">@rating.User.Email</h6>
+                                        <small class="review-date">@rating.CreatedAt.ToString("MMM dd, yyyy")</small>
+                                    </div>
+                                </div>
+                                <div class="star-rating">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= rating.RatingValue)
+                                        {
+                                            <i class="fas fa-star filled"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="far fa-star empty"></i>
+                                        }
+                                    }
+                                    <span class="rating-number">(@rating.RatingValue/5)</span>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="farmer-info">
+                                    <h5 class="farmer-name">
+                                        <i class="fas fa-tractor"></i>
+                                        @rating.Farmer.FarmName
+                                    </h5>
+                                    <p class="farmer-location">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        @rating.Farmer.Address
+                                    </p>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(rating.Comment))
+                                {
+                                    <div class="review-comment">
+                                        <p>"@rating.Comment"</p>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="review-comment no-comment">
+                                        <p><em>No written review provided</em></p>
+                                    </div>
+                                }
+                            </div>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <div class="card-actions">
+                                    <a asp-action="Details" asp-route-id="@rating.RatingID" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye"></i> Details
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@rating.RatingID" class="btn btn-outline-secondary btn-sm">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@rating.RatingID" class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3>No Reviews Yet</h3>
+                    <p>Be the first to review our amazing local farmers!</p>
+                    @if (User.IsInRole("Consumer"))
+                    {
+                        <a asp-action="Create" class="btn btn-primary">Write First Review</a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .ratings-page {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 100vh;
+        width: 100%;
+    }
+
+    .hero-section {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 60px 0;
+        margin-bottom: 40px;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+    }
+
+    .hero-content {
+        width: 100%;
+        padding: 0 2rem;
+    }
+
+    .hero-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 2rem;
+    }
+
+    .hero-text {
+        flex: 1;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .hero-actions {
+        flex-shrink: 0;
+    }
+
+    .ratings-section {
+        padding: 0 0 60px 0;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+    }
+
+    .ratings-content {
+        width: 100%;
+        padding: 0 2rem;
+    }
+
+    .ratings-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .rating-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        border: 1px solid #e9ecef;
+    }
+
+        .rating-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+    .card-header {
+        padding: 20px 20px 15px 20px;
+        border-bottom: 1px solid #f8f9fa;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .user-avatar {
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(135deg, #28a745, #20c997);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .user-details {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-name {
+        margin: 0;
+        font-weight: 600;
+        color: #2d3748;
+        font-size: 0.95rem;
+    }
+
+    .review-date {
+        color: #718096;
+        margin: 0;
+    }
+
+    .star-rating {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+    }
+
+        .star-rating i {
+            font-size: 1.1rem;
+        }
+
+        .star-rating .filled {
+            color: #ffc107;
+        }
+
+        .star-rating .empty {
+            color: #e2e8f0;
+        }
+
+    .rating-number {
+        margin-left: 8px;
+        font-size: 0.85rem;
+        color: #718096;
+        font-weight: 500;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .farmer-info {
+        margin-bottom: 15px;
+    }
+
+    .farmer-name {
+        margin: 0 0 8px 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2d3748;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .farmer-name i {
+            color: #28a745;
+            font-size: 1rem;
+        }
+
+    .farmer-location {
+        margin: 0;
+        color: #718096;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .review-comment p {
+        margin: 0;
+        line-height: 1.6;
+        color: #4a5568;
+        font-style: italic;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border-left: 4px solid #28a745;
+    }
+
+    .no-comment p {
+        color: #a0aec0;
+        font-style: italic;
+        background: #f8f9fa;
+    }
+
+    .card-actions {
+        padding: 15px 20px 20px 20px;
+        border-top: 1px solid #f8f9fa;
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+    }
+
+        .card-actions .btn {
+            border-radius: 8px;
+            font-size: 0.85rem;
+            padding: 6px 12px;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .empty-icon {
+        font-size: 80px;
+        color: #ffc107;
+        margin-bottom: 30px;
+    }
+
+    .empty-state h3 {
+        color: #2d3748;
+        margin-bottom: 15px;
+    }
+
+    .empty-state p {
+        color: #718096;
+        margin-bottom: 30px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #218838, #1ea584);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .hero-inner
+
+    {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+    }
+
+    .ratings-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .card-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .star-rating {
+        align-self: flex-start;
+    }
+
+    .hero-content,
+    .ratings-content {
+        padding: 0 1rem;
+    }
+
+    }
+
+    @@media (max-width: 480px) {
+        .ratings-grid
+
+    {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .rating-card {
+        margin: 0;
+    }
+
+    .card-actions {
+        flex-wrap: wrap;
+    }
+
+    }
+</style>

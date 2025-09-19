@@ -29,7 +29,7 @@ namespace NZFarmers.Models
 
         // The numeric rating value, constrained between 1 and 5
         [Required(ErrorMessage = "Rating is required.")]
-        [Range(1, 5, ErrorMessage = "Rating must be between 1 and 5.")]
+        [Range(1, 10, ErrorMessage = "Rating must be between 1 and 10.")]
         public int RatingValue { get; set; }
 
         // Optional comment provided by the user

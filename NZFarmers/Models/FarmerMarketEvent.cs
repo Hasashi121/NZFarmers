@@ -33,7 +33,5 @@ namespace NZFarmers.Models
         // Timestamp for when the event record was created — defaults to current UTC time
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // Navigation property to link farmers participating in this event
-        public virtual ICollection<FarmerMarketParticipation> FarmerMarketParticipations { get; set; } = new List<FarmerMarketParticipation>();
     }
 }

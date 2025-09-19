@@ -130,7 +130,7 @@ namespace NZFarmers.Controllers
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        Currency = "usd", // Change to "nzd" if needed
+                        Currency = "nzd", 
                         UnitAmount = (long)(item.FarmerProduct.Price * 100), // Stripe expects amounts in cents
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {

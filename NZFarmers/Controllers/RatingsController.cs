@@ -65,7 +65,7 @@ namespace NZFarmers.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("RatingID,UserId,FarmerID,RatingValue,Comment,CreatedAt")] Rating rating)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 _context.Add(rating);
                 await _context.SaveChangesAsync();
@@ -101,7 +101,7 @@ namespace NZFarmers.Controllers
             if (id != rating.RatingID)
                 return NotFound();
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {
