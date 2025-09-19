@@ -1,0 +1,1 @@
+﻿SELECT ProductName, Price FROM FarmerProducts WHERE Price < 5.00;

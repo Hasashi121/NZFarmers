@@ -1,0 +1,1 @@
+﻿SELECT FarmName, PhoneNumber FROM Farmers WHERE City = 'Hamilton';
