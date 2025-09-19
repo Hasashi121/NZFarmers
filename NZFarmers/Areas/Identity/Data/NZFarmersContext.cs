@@ -837,6 +837,8 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
             .WithMany()  // or a collection if you want
             .HasForeignKey(sci => sci.UserID)
             .OnDelete(DeleteBehavior.Restrict);
+
+
     }
 
 }

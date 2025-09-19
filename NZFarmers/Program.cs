@@ -5,9 +5,13 @@ using NZFarmers.Data;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Authentication.Google;
 using Stripe;
+using NZFarmers.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
+// Add Email Service
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Get the connection string
 var connectionString = configuration.GetConnectionString("NZFarmersContextConnection")

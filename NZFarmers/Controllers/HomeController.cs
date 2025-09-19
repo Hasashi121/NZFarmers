@@ -6,16 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NZFarmers.Data;
 using NZFarmers.Models;
+using NZFarmers.Services;
 
 namespace NZFarmers.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly NZFarmersContext _context;
+        private readonly IEmailService _emailService;
+        readonly NZFarmersContext _context;
 
-        public HomeController(NZFarmersContext context)
+        public HomeController(NZFarmersContext context, IEmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
+
         }
 
         // GET: Home/Index
@@ -60,12 +64,34 @@ namespace NZFarmers.Controllers
         {
             return View();
         }
+        public IActionResult Privacy()
+        {
+            return View();
+        }
 
         // Error handling
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+       
+        // POST: Home/SendContactEmail
+        [HttpPost]
+        public async Task<IActionResult> SendContactEmail(string email, string subject, string message)
+        {
+            try
+            {
+                await _emailService.SendContactEmailAsync(email, subject, message);
+                TempData["Success"] = "Thank you! Your message has been sent successfully.";
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "Sorry, we couldn't send your message. Please try again later.";
+            }
+
+            return RedirectToAction("Privacy");
         }
     }
 }
