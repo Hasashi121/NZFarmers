@@ -31,10 +31,6 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        // Customize the ASP.NET Identity model and override the defaults if needed.
-        // For example, you can rename the ASP.NET Identity table names and more.
-        // Add your customizations after calling base.OnModelCreating(builder);
-
 
         builder.Entity<NZFarmersUser>().HasData(
      new NZFarmersUser
@@ -61,7 +57,6 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
          SecurityStamp = Guid.NewGuid().ToString("D"),
          ConcurrencyStamp = Guid.NewGuid().ToString("D")
      },
-     // ADD THESE 4 MISSING USERS:
      new NZFarmersUser
      {
          Id = "seed-user-3",
@@ -596,7 +591,6 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
 );
         
         builder.Entity<FarmerMarketEvent>().HasData(
-    // Existing events (keep these as they are but using FarmerMarketEvent)
     new FarmerMarketEvent
     {
         EventID = 60,
@@ -814,7 +808,7 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
         builder.Entity<Rating>()
      .HasOne(r => r.User)
      .WithMany(u => u.Ratings)
-     .HasForeignKey(r => r.UserId) // Use UserId, not UserID
+     .HasForeignKey(r => r.UserId) 
      .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<Farmers>()
@@ -831,10 +825,9 @@ public class NZFarmersContext : IdentityDbContext<NZFarmersUser>
         .OnDelete(DeleteBehavior.Restrict);
 
 
-        // Similarly, if needed for ShoppingCartItem -> User
         builder.Entity<ShoppingCartItem>()
             .HasOne(sci => sci.User)
-            .WithMany()  // or a collection if you want
+            .WithMany()  
             .HasForeignKey(sci => sci.UserID)
             .OnDelete(DeleteBehavior.Restrict);
 

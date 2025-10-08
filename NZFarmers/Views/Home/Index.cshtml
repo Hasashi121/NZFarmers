@@ -22,7 +22,6 @@
         color: var(--dark-text);
     }
 
-    /* Full-screen Hero Section with Background Image */
     .marketplace-header {
         background: linear-gradient(rgba(30, 138, 62, 0.6), rgba(30, 138, 62, 0.6)), url('/uploads/Background.jpeg');
         background-size: cover;
@@ -40,6 +39,8 @@
         align-items: center;
         justify-content: center;
         position: relative;
+        width: 100vw; 
+        margin-left: calc(-50vw + 50%); 
     }
 
         .marketplace-header h1 {
@@ -333,7 +334,7 @@
         <div class="hero-content">
             <h1><i class="fas fa-leaf me-3"></i>NZFarmers Marketplace</h1>
             <p class="header-subtitle">Fresh from our farms to your table - Supporting local New Zealand farmers</p>
-            <a href="#products" class="hero-btn">
+            <a asp-controller="FarmerProducts" asp-action="Index" class="hero-btn">
                 <i class="fas fa-shopping-basket me-2"></i>Shop Now
             </a>
         </div>

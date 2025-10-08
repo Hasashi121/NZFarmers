@@ -127,7 +127,6 @@ namespace NZFarmers.Controllers
                         await farmer.ProfileImageFile.CopyToAsync(fileStream);
                     }
 
-                    // Save the relative path in the DB
                     farmer.ProfileImage = "/uploads/" + uniqueFileName;
                 }
 

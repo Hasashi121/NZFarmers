@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NZFarmers.Data;
 using NZFarmers.Models;
-using NZFarmers.Areas.Identity.Data; // for NZFarmersUser if needed
+using NZFarmers.Areas.Identity.Data; 
 
 namespace NZFarmers.Controllers
 {
@@ -53,8 +53,6 @@ namespace NZFarmers.Controllers
             ViewData["FarmerID"] = new SelectList(_context.Farmers, "FarmerID", "FarmName");
 
             // Dropdown for User (Identity). 
-            // NOTE: This only works if your NZFarmersContext includes:
-            // public DbSet<NZFarmersUser> Users { get; set; }
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
 
             return View();

@@ -1,5 +1,4 @@
-﻿// Required namespaces for collections, validation attributes, and data modeling
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using NZFarmers.Models; // Reference to the Models namespace where related classes (like PaymentMethod) live

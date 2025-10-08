@@ -32,7 +32,6 @@ namespace NZFarmers.Controllers
             if (string.IsNullOrEmpty(userId))
                 return Challenge();
 
-            // Removed the extra ThenInclude(fp => fp.Product)
             var cartItems = await _context.ShoppingCartItems
                 .Include(ci => ci.FarmerProduct)
                 .Where(ci => ci.UserID == userId)
@@ -134,7 +133,6 @@ namespace NZFarmers.Controllers
                         UnitAmount = (long)(item.FarmerProduct.Price * 100), // Stripe expects amounts in cents
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
-                            // Use the product name directly from FarmerProduct
                             Name = item.FarmerProduct.ProductName
                         }
                     },

@@ -55,8 +55,6 @@ namespace NZFarmers.Controllers
         }
 
         // POST: OrderDetails/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("OrderDetailID,OrderID,FarmerProductID,Quantity,Subtotal")] OrderDetail orderDetail)
@@ -91,8 +89,6 @@ namespace NZFarmers.Controllers
         }
 
         // POST: OrderDetails/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("OrderDetailID,OrderID,FarmerProductID,Quantity,Subtotal")] OrderDetail orderDetail)

@@ -24,6 +24,7 @@ namespace NZFarmers.Models
         // The scheduled date of the event — required and validated as a proper date format
         [Required(ErrorMessage = "Event date is required.")]
         [DataType(DataType.Date, ErrorMessage = "Invalid date format.")]
+        [FutureDate(ErrorMessage = "Event date cannot be in the past.")]
         public DateTime Date { get; set; }
 
         // Optional description providing more context or details about the event
@@ -33,5 +34,21 @@ namespace NZFarmers.Models
         // Timestamp for when the event record was created — defaults to current UTC time
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    }
+}
+// Custom validation attribute to ensure date is not in the past
+public class FutureDateAttribute : ValidationAttribute
+{
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+    {
+        if (value is DateTime date)
+        {
+            // Compare only the date part (ignore time)
+            if (date.Date < DateTime.Today)
+            {
+                return new ValidationResult(ErrorMessage ?? "Date cannot be in the past.");
+            }
+        }
+        return ValidationResult.Success;
     }
 }
