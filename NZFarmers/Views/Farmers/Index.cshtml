@@ -160,7 +160,7 @@
                                     </a>
 
                                     <!-- Admin/Farmer Controls -->
-                                    @if (User.IsInRole("Admin") || User.IsInRole("Farmer"))
+                                    @if (User.IsInRole("Admin"))
                                     {
                                         <div class="admin-actions">
                                             <a asp-action="Edit" asp-route-id="@farmer.FarmerID" class="btn btn-outline-secondary btn-sm">
